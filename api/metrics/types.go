@@ -1,5 +1,9 @@
 package metrics
 
+import "time"
+
+var cacheAge = 10 * time.Second
+
 type CurrentDownload struct {
 	Id            string
 	TotalSize     int

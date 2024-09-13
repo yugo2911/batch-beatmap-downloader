@@ -16,17 +16,17 @@ func open() {
 	fullDb, _ = sql.Open("sqlite3", os.Getenv("FULL_DB_LOCATION"))
 
 	println("Total Maps:", GetBeatmapCount())
-	// RefreshFarm()
-	// BatchUpdate(AddFarm)
+	//RefreshFarm()
+	//BatchUpdate(AddFarm)
 
-	var count int
-	row := metaDb.QueryRow("SELECT COUNT(*) FROM beatmaps WHERE farm=1")
-	row.Scan(&count)
-	println("Farm Maps:", count)
+	// var count int
+	// row := metaDb.QueryRow("SELECT COUNT(*) FROM beatmaps WHERE farm=1")
+	// row.Scan(&count)
+	// println("Farm Maps:", count)
 
-	row = metaDb.QueryRow("SELECT COUNT(*) FROM beatmaps WHERE stream=1")
-	row.Scan(&count)
-	println("Stream Maps:", count)
+	// row = metaDb.QueryRow("SELECT COUNT(*) FROM beatmaps WHERE stream=1")
+	// row.Scan(&count)
+	// println("Stream Maps:", count)
 }
 
 func Close() {

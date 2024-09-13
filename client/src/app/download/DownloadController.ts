@@ -62,8 +62,11 @@ export class DownloadController {
   }
 
   public removeIds(ids: number[]) {
-    this.ids = this.ids.filter(id => !ids.includes(id))
-    this.status.all = this.ids;
+    // an id is removed from this download if it is in this.ids and its in ids
+    const removed = this.ids.filter(id => ids.includes(id))
+
+    this.status.skipped.push(...removed)
+    this.toDownload = this.toDownload.filter(id => !ids.includes(id))
     setDownloadStatus(this)
     emitStatus();
   }

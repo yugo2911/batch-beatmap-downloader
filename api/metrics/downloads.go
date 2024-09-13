@@ -6,7 +6,15 @@ import (
 	"github.com/nzbasic/batch-beatmap-downloader/api/metrics/store"
 )
 
+var downloadsCache DownloadMetricsV2
+var downloadsCacheAge time.Time
+
 func GetDownloadMetricsV2() DownloadMetricsV2 {
+	// check if cache is still valid
+	if time.Now().Before(downloadsCacheAge.Add(cacheAge)) {
+		return downloadsCache
+	}
+
 	db := store.GetDb()
 	timeYesterday := time.Now().Add(-24 * time.Hour)
 	timeMinuteAgo := time.Now().Add(-1 * time.Minute)
@@ -76,12 +84,15 @@ func GetDownloadMetricsV2() DownloadMetricsV2 {
 		Completed: totalFinished,
 	}
 
-	return DownloadMetricsV2{
+	downloadsCacheAge = time.Now()
+	downloadsCache = DownloadMetricsV2{
 		CurrentDownloads:      current,
 		DailyStats:            daily,
 		CurrentBandwidthUsage: totalMinuteBandwidth,
 		AverageSpeedMinute:    averageSpeedMinute,
 	}
+
+	return downloadsCache
 }
 
 func GetDownloadMetrics() DownloadMetrics {

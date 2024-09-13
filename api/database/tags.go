@@ -24,7 +24,7 @@ func BatchUpdate(updater Updater) {
 
 	for i := 0; i < pages; i++ {
 		tx, _ := metaDb.Begin()
-		rows, err := fullDb.Query(fmt.Sprintf("SELECT * FROM beatmaps LIMIT 1000 OFFSET %d", (batchSize * i)))
+		rows, err := metaDb.Query(fmt.Sprintf("SELECT * FROM beatmaps LIMIT 1000 OFFSET %d", (batchSize * i)))
 		if err != nil {
 			log.Fatal(err)
 		}

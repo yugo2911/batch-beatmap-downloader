@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"time"
@@ -38,7 +37,6 @@ func DownloadBeatmap(setId string) (bytes.Buffer, error) {
 
 	if res.StatusCode != http.StatusOK {
 		res.Body.Close()
-		log.Printf("%d\n", res.StatusCode)
 		return bytes.Buffer{}, errors.New("status code is not 200")
 	}
 

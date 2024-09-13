@@ -6,7 +6,6 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/nzbasic/batch-beatmap-downloader/api/database"
-	"github.com/nzbasic/batch-beatmap-downloader/api/database/update"
 	"github.com/nzbasic/batch-beatmap-downloader/api/routes"
 )
 
@@ -18,8 +17,8 @@ func main() {
 
 	log.Println("Server listening at " + serverUri)
 
-	go update.UpdateExistingBeatmapsLoop()
-	go update.GetNewBeatmapsLoop()
+	// go update.UpdateExistingBeatmapsLoop()
+	// go update.GetNewBeatmapsLoop()
 
 	log.Fatal(http.ListenAndServe(serverUri, routes.Router))
 }

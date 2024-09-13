@@ -22,20 +22,33 @@ func GetNewBeatmapsLoop() {
 		log.Println(err)
 	}
 
-	highestId := getLatestSetId()
-	if highestId > 0 && highestId > lastSetId+1 {
-		fmt.Printf("Downloading from %d to %d\n", lastSetId+1, highestId)
-		for i := lastSetId + 1; i <= highestId; i++ {
-			getBeatmap(i)
-			time.Sleep(1 * time.Second)
+	lastSetId = 1800000
+	highestId := 2124033
+
+	fmt.Printf("Downloading from %d to %d\n", highestId, lastSetId+1)
+	for i := highestId; i > lastSetId; i-- {
+		if database.Exists(i) {
+			// fmt.Printf("%d exists\n", i)
+			continue
 		}
+
+		// fmt.Printf("%d checking\n", i)
+
+		res := getBeatmap(i)
+
+		if res {
+			fmt.Printf("%d added\n", i)
+		} else {
+		}
+
+		time.Sleep(2 * time.Second)
 	}
 
 	time.Sleep(5 * time.Minute)
 	GetNewBeatmapsLoop()
 }
 
-func getBeatmap(setId int) {
+func getBeatmap(setId int) bool {
 	c := osuapi.NewClient(os.Getenv("OSU_KEY"))
 	beatmaps, err := c.GetBeatmaps(osuapi.GetBeatmapsOpts{
 		BeatmapSetID: setId,
@@ -43,23 +56,35 @@ func getBeatmap(setId int) {
 
 	if err != nil {
 		log.Println("osu! API error", err)
-		return
+		return false
 	}
 
 	if len(beatmaps) == 0 {
-		return
+		return false
+	}
+
+	shouldAdd := false
+	for _, beatmap := range beatmaps {
+		if beatmap.ApprovedDate.GetTime().Unix() > 0 || beatmap.Playcount > 1000 {
+			shouldAdd = true
+		}
+	}
+
+	if !shouldAdd {
+		return false
 	}
 
 	buffer, err := api.DownloadBeatmap(fmt.Sprintf("%d", setId))
 	if err != nil {
-		log.Println("Error downloading beatmap", err)
-		return
+		log.Printf("Error downloading beatmap %d", setId)
+		log.Println(err)
+		return false
 	}
 
 	body, err := ioutil.ReadAll(&buffer)
 	if err != nil {
 		log.Println("Error reading buffer", err)
-		return
+		return false
 	}
 
 	beatmapsData := osu.ParseOszInMemoryWithApiData(beatmaps, body)
@@ -71,6 +96,8 @@ func getBeatmap(setId int) {
 
 		database.AddBeatmap(beatmapData)
 	}
+
+	return true
 }
 
 func getLatestSetId() int {
@@ -79,6 +106,8 @@ func getLatestSetId() int {
 	res, err := c.GetBeatmaps(osuapi.GetBeatmapsOpts{
 		Since: &time,
 	})
+
+	fmt.Printf("%d", len(res))
 
 	if err != nil {
 		return 0
