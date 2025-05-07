@@ -5,6 +5,7 @@ module.exports = {
     extend: {
       colors: {
         monokai: {
+          blue: "#2c5c87",
           dark: "#192227",
           light: "#263238",
           border: "#141C20",

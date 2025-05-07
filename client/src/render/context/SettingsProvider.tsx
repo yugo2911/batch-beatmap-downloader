@@ -12,6 +12,7 @@ interface SettingsObject {
   maxConcurrentDownloads: number;
   validPath: boolean;
   autoTransfer: boolean;
+  client: string;
 }
 
 export interface Settings {
@@ -22,6 +23,7 @@ export interface Settings {
   setAltPathEnabled: (enabled: boolean) => void;
   setAltPath: (path: string) => void;
   setMaxConcurrentDownloads: (number: number) => void;
+  setClient: (client: string) => void;
 }
 
 const defaultContext: Settings = {
@@ -34,6 +36,7 @@ const defaultContext: Settings = {
     maxConcurrentDownloads: 5,
     validPath: false,
     autoTransfer: false,
+    client: "stable",
   },
 
   toggleDarkMode: () => null,
@@ -41,11 +44,12 @@ const defaultContext: Settings = {
   setAltPathEnabled: () => null,
   setAltPath: () => null,
   setMaxConcurrentDownloads: () => null,
+  setClient: () => null,
 };
 
 export const SettingsContext = createContext<Settings>(defaultContext);
 
-const SettingsProvider: React.FC<PropsWithChildren<any>> = ({ children }) => {
+const SettingsProvider: React.FC<PropsWithChildren<object>> = ({ children }) => {
   const [settings, setSettings] = useState(defaultContext.settings)
 
   useEffect(() => {
@@ -59,6 +63,7 @@ const SettingsProvider: React.FC<PropsWithChildren<any>> = ({ children }) => {
         maxConcurrentDownloads: res.maxConcurrentDownloads as number ?? 5,
         validPath: res.validPath as boolean ?? false,
         autoTransfer: res.autoTransfer as boolean ?? false,
+        client: res.client as string ?? "stable",
       })
 
       document.documentElement.classList.toggle('dark', res.darkMode as boolean ?? true);
@@ -101,6 +106,14 @@ const SettingsProvider: React.FC<PropsWithChildren<any>> = ({ children }) => {
     }))
   }
 
+  const handleSetClient = async (client: string) => {
+    await window.electron.setSetting("client", client)
+    setSettings(prev => ({
+      ...prev,
+      client
+    }))
+  }
+
   const debouncedSetMaxConcurrentDownloads = debounce((value: number) => window.electron.setSetting("maxConcurrentDownloads", value), 500)
 
   const handleSetMaxConcurrentDownloads = (number: number) => {
@@ -120,6 +133,7 @@ const SettingsProvider: React.FC<PropsWithChildren<any>> = ({ children }) => {
         setAltPathEnabled: handleSetAltPathEnabled,
         setAltPath: handleSetAltPath,
         setMaxConcurrentDownloads: handleSetMaxConcurrentDownloads,
+        setClient: handleSetClient,
       }}
     >
       {children}

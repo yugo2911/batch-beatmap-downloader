@@ -12,7 +12,7 @@
 
 input {
   @apply p-2 bg-gray-50 rounded-md shadow-sm border-gray-300 border text-gray-600 w-full focus:outline-none focus:border-monokai-light2 transition ease-in-out placeholder-gray-500;
-  @apply dark:bg-monokai-light2 dark:border dark:border-black dark:placeholder-gray-200 dark:text-gray-200;
+  @apply dark:bg-monokai-light2 dark:border dark:border-monokai-dark dark:placeholder-gray-200 dark:text-gray-200;
 }
 
 input:disabled {
@@ -20,19 +20,19 @@ input:disabled {
 }
 
 .button {
-  @apply dark:bg-blue-600 dark:hover:bg-blue-700 hover:bg-blue-400 bg-blue-400 text-white cursor-pointer transition-colors
+  @apply  hover:bg-monokai-blue bg-monokai-blue text-white cursor-pointer transition-colors
 }
 
 .box-selector {
-  @apply content-box transition-colors button
+  @apply w-full py-3 rounded transition-colors button
 }
 
 .box-selector-off {
-  @apply box-selector button dark:hover:border-black hover:border-gray-600 hover:text-white cursor-pointer text-black dark:text-white !important
+  @apply box-selector button hover:text-white cursor-pointer text-black dark:text-white dark:bg-monokai-light dark:hover:bg-monokai-blue !border-0;
 }
 
 .box-selector-on {
-  @apply box-selector dark:border-black border-gray-600 text-white font-semibold text-lg cursor-default bg-blue-600 !important
+  @apply box-selector dark:border-monokai-blue border-gray-600 text-white font-semibold text-lg cursor-default bg-monokai-blue dark:bg-monokai-blue;
 }
 
 .warning {
@@ -40,11 +40,11 @@ input:disabled {
 }
 
 .shadow-border {
-  @apply shadow-sm rounded-md border dark:border-black dark:bg-zinc-800 border-gray-400 bg-white;
+  @apply shadow-sm rounded-md border dark:border-monokai-dark dark:bg-zinc-800 border-gray-400 bg-white;
 }
 
 .content-box {
-  @apply bg-white dark:bg-monokai-dark p-6 shadow-border w-full;
+  @apply bg-white dark:bg-monokai-dark p-4 shadow-border w-full;
 }
 
 .no-pad {

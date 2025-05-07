@@ -8,15 +8,15 @@
  */
 
 import React from "react";
-import ReactDOM from "react-dom";
 import App from "./render/App";
 import DownloadsProvider from "./render/context/DownloadProvider";
 import SettingsProvider from "./render/context/SettingsProvider";
 import StatusProvider from "./render/context/StatusProvider";
 import "./render/index.css";
+import { createRoot } from "react-dom/client";
 
 function render() {
-  ReactDOM.render(
+  createRoot(document.getElementById("root")!).render(
     <StatusProvider>
       <DownloadsProvider>
         <SettingsProvider>
@@ -24,7 +24,6 @@ function render() {
         </SettingsProvider>
       </DownloadsProvider>
     </StatusProvider>,
-    document.getElementById("root")
   );
 }
 

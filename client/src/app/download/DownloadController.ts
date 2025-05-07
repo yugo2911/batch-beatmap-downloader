@@ -30,7 +30,7 @@ export class DownloadController {
   private concurrentDownloads: number = 3;
   private id: string;
   private toDownload: number[] = [];
-  private interval: NodeJS.Timer;
+  private interval: NodeJS.Timeout;
   private ipc: DownloadIPC;
 
   public constructor(id: string, ids: number[], size: number, force: boolean, hashes: string[]) {

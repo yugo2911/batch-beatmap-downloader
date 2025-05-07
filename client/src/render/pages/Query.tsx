@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { cloneDeep } from "lodash";
 import { toast } from "react-toastify";
-import ReactDOM from "react-dom";
+import ReactDOM, { createPortal } from "react-dom";
 import { CircularProgress } from "@mui/material";
 
 import { sampleTree } from "../../models/filter";
@@ -94,7 +94,7 @@ export const Query = () => {
     const node = document.getElementById('modal')
     if (!node) return
     node.classList.remove('hidden')
-    ReactDOM.render(
+    createPortal(
       <div className="bg-white dark:bg-monokai-light rounded-xl shadow p-8">
         <p className="font-bold text-xl mb-4">Compatibility Error</p>
         <p>Your current query is not compatible with the Simple Mode due to either:</p>
@@ -140,6 +140,7 @@ export const Query = () => {
               updateOrder={(order) => setOrder(order)}
             />
             <div className="flex gap-2 items-center">
+              {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
               <Button color="blue" onClick={exportData} disabled={loading}>
                 Search
               </Button>

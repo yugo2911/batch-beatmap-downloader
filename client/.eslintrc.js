@@ -21,6 +21,7 @@ module.exports = {
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-floating-promises": "off",
     "@typescript-eslint/no-inferrable-types": "off",
+    "@typescript-eslint/no-misused-promises": "off",
   },
   extends: [
     "plugin:@typescript-eslint/recommended",

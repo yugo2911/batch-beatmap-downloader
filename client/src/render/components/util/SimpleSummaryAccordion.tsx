@@ -5,6 +5,7 @@ import React from "react";
 interface Props {
   title: string
   expanded?: true
+  children?: React.ReactNode
 }
 
 export const SimpleSummaryAccordion: React.FC<Props>= ({ title, expanded, children }) => {

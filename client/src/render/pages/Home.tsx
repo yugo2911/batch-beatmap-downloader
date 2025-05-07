@@ -24,16 +24,17 @@ export const Home = () => {
           Batch Beatmap Downloader in 60 seconds
         </button>
       </div>
+
       <Settings />
-      <Temporary />
+      {/*<Temporary />*/}
       <BasicStatus />
 
-      {!validPath ? <InvalidPath /> : (
-        <div className="flex flex-col gap-4">
-          <FindMissingMaps />
-          <SampleFilters />
-        </div>
-      )}
+      {/*{!validPath ? <InvalidPath /> : (*/}
+      {/*  <div className="flex flex-col gap-4">*/}
+      {/*    <FindMissingMaps />*/}
+      {/*    <SampleFilters />*/}
+      {/*  </div>*/}
+      {/*)}*/}
     </div>
   );
 };

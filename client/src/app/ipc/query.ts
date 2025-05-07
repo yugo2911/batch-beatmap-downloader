@@ -1,11 +1,11 @@
 import axios from "axios";
-import { Node } from "../../models/filter";
-import { BeatmapDetails, DownloadDetails, QueryOrder } from "../../models/api";
+import { Node } from "@/models/filter";
+import { BeatmapDetails, DownloadDetails, QueryOrder } from "@/models/api";
 import { E, serverUri } from "./main";
-import { MetricsV2 } from "../../models/metrics";
+import { MetricsV2 } from "@/models/metrics";
 import { beatmapIds, loadBeatmaps } from "../beatmaps";
 import { clientId } from "../download/settings";
-import { FilterResponseV2 } from "../../models/api-v2";
+import { FilterResponseV2 } from "@/models/api-v2";
 
 export let currentQueryResult: FilterResponseV2;
 export let currentDownloadDetails: DownloadDetails;

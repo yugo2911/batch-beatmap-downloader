@@ -3,13 +3,8 @@ import Slider from 'rc-slider'
 import 'rc-slider/assets/index.css';
 import { Input } from "../../util/Input";
 import is_number from "is-number";
-import { TInputItemSlider } from "../../../../models/simple";
+import { TInputItemSlider } from "@/models/simple";
 import { TInputItemProps } from "./InputItem";
-
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-const createSliderWithTooltip = Slider.createSliderWithTooltip;
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-const Range = createSliderWithTooltip(Slider.Range);
 
 export const SliderInput: React.FC<TInputItemProps<TInputItemSlider>> = ({ label, value, onChange, min, max, step }) => {
   const updateValue = (newValue: string, index: number) => {
@@ -34,7 +29,8 @@ export const SliderInput: React.FC<TInputItemProps<TInputItemSlider>> = ({ label
             onChange={(value) => updateValue(value, 0)}
           />
         </div>
-        <Range
+        <Slider
+          range
           value={value}
           onChange={onChange}
           min={min}

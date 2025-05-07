@@ -4,7 +4,7 @@ import { E, serverUri } from './main';
 import { currentQueryResult, currentDownloadDetails } from './query';
 import { v4 as uuid } from 'uuid'
 import axios from 'axios';
-import { DownloadStartV2 } from '../../models/api-v2';
+import { DownloadStartV2 } from "@/models/api-v2";
 import { clientId } from '../download/settings';
 import { getSongsFolder, getTempPath } from '../settings';
 import fs from 'fs';

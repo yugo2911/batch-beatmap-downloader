@@ -1,8 +1,9 @@
 import { app, BrowserWindow, nativeTheme, shell } from "electron";
 import isDev from "electron-is-dev";
 import Store from "electron-persist-secure/lib/store";
-import updateElectronApp from 'update-electron-app'
+import { updateElectronApp } from "update-electron-app";
 import log from 'electron-log'
+
 updateElectronApp({ logger: log })
 
 // Import all IPCs to make sure they register their respective listeners
@@ -18,6 +19,7 @@ declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 if (require("electron-squirrel-startup")) {
   // eslint-disable-line global-require
   app.quit();
@@ -42,7 +44,6 @@ const createWindow = (): void => {
     minHeight: 720,
     minWidth: 1280,
     title: "Batch Beatmap Downloader",
-    titleBarStyle: "hidden",
     icon: "./render/assets/bbd.ico",
     backgroundColor: "#fff",
     webPreferences: {
@@ -52,8 +53,8 @@ const createWindow = (): void => {
     },
   });
 
+  mainWindow.setMenuBarVisibility(false);
   window = mainWindow;
-  mainWindow.setMenu(null);
 
   window.on('close', (e) => {
     e.preventDefault();
@@ -115,10 +116,10 @@ app.on('web-contents-created', (e, contents) => {
   if (contents.getType() == 'webview') {
 
     // Listen for any new window events
-    contents.on('new-window', (e, url) => {
-      e.preventDefault()
-      shell.openExternal(url)
-    })
+    // contents.on('new-window', (e, url) => {
+    //   e.preventDefault()
+    //   shell.openExternal(url)
+    // })
   }
 })
 

@@ -1,7 +1,7 @@
-import { SettingType } from './../../models/settings';
+import { SettingType } from "@/models/settings";
 import settings from "electron-settings";
-import { SettingsObject } from "../../global";
-import { window } from '../../main'
+import { SettingsObject } from "@/global";
+import { window } from "@/main"
 import { dialog } from "electron";
 import { beatmapIds, loadBeatmaps } from "../beatmaps";
 import { checkCollections } from "../collection/collection";
@@ -21,22 +21,14 @@ export const handleGetSettings = async () => {
 export const handleSetSettings = (event: E, s: SettingsObject) => settings.set(s);
 export const handleSetSetting = async <T extends keyof SettingType>(event: E, key: T, value: Parameters<SettingType[T]>[0]) => {
   switch(key) {
-    case "darkMode":
-      return settings.set("darkMode", value);
-    case "maxConcurrentDownloads":
-      return settings.set("maxConcurrentDownloads", value);
     case "path":
       return await handleSetPath(value as string);
     case "altPath":
       return await handleSetAltPath(value as string);
     case "altPathEnabled":
       return await handleSetAltPathEnabled(value as boolean);
-    case "temp":
-      return settings.set("temp", value);
-    case "tempPath":
-      return settings.set("tempPath", value);
-    case "autoTemp":
-      return settings.set("autoTemp", value);
+    default:
+      return settings.set(key, value);
   }
 }
 
@@ -87,8 +79,13 @@ export const handleGetTempData = async () => {
   const tempEnabled = await settings.get("temp") as boolean;
   const tempAuto = await settings.get("autoTemp") as boolean
   const tempPath = await getTempPath();
-  const files = tempPath ? await fs.promises.readdir(tempPath) : []
-  const valid = await checkValidTempPath(tempPath);
+
+  const exists = tempPath ?
+    await fs.promises.access(tempPath).then(() => true).catch(() => false) :
+    false;
+
+  const files = exists ? await fs.promises.readdir(tempPath) : [];
+  const valid = exists ? await checkValidTempPath(tempPath) : false;
 
   return {
     valid,

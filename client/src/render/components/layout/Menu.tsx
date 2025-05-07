@@ -17,7 +17,7 @@ interface PropTypes {
 }
 
 export const Menu = ({ version }: PropTypes) => {
-  const { pathname } = useLocation();
+  const pathname = window.location.pathname;
 
   const pages = [
     { link: "/", title: "Home", icon: <HomeIcon /> },

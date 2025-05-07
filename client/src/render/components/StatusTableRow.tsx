@@ -1,8 +1,7 @@
-import { RowProps, TableData } from "../types/table";
+import { RowProps } from "../types/table";
 import classNames from 'classnames'
 import React from "react";
 import { bytesToFileSize } from "../util/fileSize";
-import humanizeDuration from "humanize-duration";
 
 export interface CurrentDownloadV2 {
   Size: number;
