@@ -13,12 +13,13 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "typeRoots": ["node_modules/@types"],
+    "target": "es6",
     "paths": {
       "*": ["node_modules/*"],
       "@/*": ["./src/*"],
       "@assets/*": ["./assets/*"],
       "@containers/*": ["./src/render/containers/*"],
-      "@components/*": ["./src/render/components/*"]
+      "@components/*": ["./src/render/components/*"],
     }
   },
   "include": [

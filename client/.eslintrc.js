@@ -22,6 +22,8 @@ module.exports = {
     "@typescript-eslint/no-floating-promises": "off",
     "@typescript-eslint/no-inferrable-types": "off",
     "@typescript-eslint/no-misused-promises": "off",
+    "@typescript-eslint/no-unused-vars": "off",
+    "@typescript-eslint/no-explicit-any": "off",
   },
   extends: [
     "plugin:@typescript-eslint/recommended",

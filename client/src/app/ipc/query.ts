@@ -3,9 +3,9 @@ import { Node } from "@/models/filter";
 import { BeatmapDetails, DownloadDetails, QueryOrder } from "@/models/api";
 import { E, serverUri } from "./main";
 import { MetricsV2 } from "@/models/metrics";
-import { beatmapIds, loadBeatmaps } from "../beatmaps";
 import { clientId } from "../download/settings";
 import { FilterResponseV2 } from "@/models/api-v2";
+import { Application } from "@/app/application";
 
 export let currentQueryResult: FilterResponseV2;
 export let currentDownloadDetails: DownloadDetails;
@@ -19,7 +19,9 @@ export const handleQuery = async (event: E, node: Node, limit?: number, order?: 
   const res = (await axios.post<FilterResponseV2>(`${serverUri}/v2/filter`, body)).data
   currentQueryResult = res;
 
-  await loadBeatmaps()
+  const client = Application.instance.client;
+
+  await client.loadBeatmaps();
   let totalSize = 0;
   let totalSizeForce = 0;
   let sets = 0;
@@ -31,7 +33,7 @@ export const handleQuery = async (event: E, node: Node, limit?: number, order?: 
     const setId = Number(setIdString);
     totalSizeForce += size;
 
-    if (!beatmapIds.has(setId)) {
+    if (!client.beatmapSets.has(setId)) {
       totalSize += size;
       sets++;
     }

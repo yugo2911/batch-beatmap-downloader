@@ -5,6 +5,7 @@ import { Browse } from "./Browse";
 import { NumericInput } from "./util/NumericInput";
 import { Tooltip } from "./util/Tooltip";
 import classNames from "classnames";
+import { useDownload } from "@/render/context/DownloadProvider";
 
 const parallelTooltip = `Advanced: The number of parallel requests made per download.
 Increasing this may increase your total download speed.
@@ -20,28 +21,39 @@ const clients = [
 ];
 
 export const Settings = () => {
+  const { downloads } = useDownload();
+  console.log(downloads);
+
   const {
     settings,
-    setPath,
-    setAltPathEnabled,
-    setAltPath,
+    setStableMainPath,
+    setStableAltPath,
+    setStableAltPathEnabled,
+    setLazerSongsPath,
+    setManualDownloadPath,
     toggleDarkMode,
     setMaxConcurrentDownloads,
     setClient,
-  } = useSettings()
+  } = useSettings();
 
   const {
-    path,
-    altPathEnabled,
-    altPath,
     darkMode,
     beatmapSetCount,
-    maxConcurrentDownloads
-  } = settings
+    maxConcurrentDownloads,
+    client,
+    clientPaths,
+    validPath,
+  } = settings;
+
+  const stableSettings = clientPaths.stable;
+  const lazerSettings = clientPaths.lazer;
+  const manualSettings = clientPaths.manual;
 
   return (
     <div className="content-box flex flex-col dark:text-white w-full">
       <span className="font-bold text-lg">Settings</span>
+
+      <pre>{JSON.stringify(settings, null, 2)}</pre>
 
       <div className="flex items-center gap-4 my-4">
         {clients.map(client => (
@@ -59,37 +71,51 @@ export const Settings = () => {
       </div>
 
       <div className="flex flex-col gap-4 mt-4">
-        {settings.client === 'stable' && (
+        {client === 'stable' && (
           <>
             <div className="flex items-center gap-2">
-              <span className="w-52">osu! Path:</span>
-              <Browse path={path} update={setPath} />
-              {!altPathEnabled && <span>{beatmapSetCount} Beatmap Sets Found</span>}
+              <span className="w-52">osu!stable Songs Path:</span>
+              <Browse path={stableSettings.mainPath} update={setStableMainPath} />
+              {validPath && <span>{beatmapSetCount} Beatmap Sets Found</span>}
             </div>
             <div className="flex items-center gap-2">
-              <span className="w-52">Alternate Songs Path:</span>
-              <Switch onChange={(mode) => setAltPathEnabled(mode)} checked={altPathEnabled} />
-              {altPathEnabled && <Browse path={altPath} update={setAltPath} />}
-              {altPathEnabled && <span>{altPath ? beatmapSetCount : 0} Beatmap Sets Found</span>}
+              <span className="w-52">Alt. Songs Path (stable):</span>
+              <Switch onChange={(mode) => setStableAltPathEnabled(mode)} checked={stableSettings.altPathEnabled} />
+              {stableSettings.altPathEnabled && <Browse path={stableSettings.altPath} update={setStableAltPath} />}
+              {stableSettings.altPathEnabled && validPath && <span>({beatmapSetCount} total sets)</span>}
             </div>
           </>
         )}
 
+        {client === 'lazer' && (
+          <div className="flex items-center gap-2">
+            <span className="w-52">osu!lazer Songs Path:</span>
+            <Browse path={lazerSettings.songsPath} update={setLazerSongsPath} />
+            {validPath && <span>{beatmapSetCount} Beatmap Sets Found</span>}
+          </div>
+        )}
+
+        {client === 'manual' && (
+          <div className="flex items-center gap-2">
+            <span className="w-52">Download Path:</span>
+            <Browse path={manualSettings.downloadPath} update={setManualDownloadPath} />
+            {validPath && <span>Path is valid</span>}
+          </div>
+        )}
+
         <div className="flex items-center gap-2">
           <span className="w-52">Dark Mode:</span>
-          <Switch onChange={(mode) => toggleDarkMode(mode)} checked={darkMode} />
+          <Switch onChange={toggleDarkMode} checked={darkMode} />
         </div>
+
         <div className="flex items-center gap-2">
-          <span className="w-52 shrink-0">
-            Parallel Downloads
-            <Tooltip title={parallelTooltip} />
-          </span>
+          <span className="w-52">Max Concurrent Downloads:</span>
+          <Tooltip title={parallelTooltip} />
           <NumericInput
-            className="w-20"
-            max={25}
+            value={maxConcurrentDownloads}
+            onChange={setMaxConcurrentDownloads}
             min={1}
-            value={maxConcurrentDownloads ?? 5}
-            onChange={(value) => setMaxConcurrentDownloads(Math.max(1, Math.min(25, value)))}
+            max={25}
           />
         </div>
       </div>

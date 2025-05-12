@@ -20,7 +20,7 @@ export interface Collection {
  * @param path Path to collection.db file
  */
 export const readCollections = async (path: string) => {
-  const buffer = await fs.promises.readFile(path + "\\collection.db");
+  const buffer = await fs.promises.readFile(path);
   const reader = new OsuReader(buffer.buffer);
 
   const collections: Collections = {
@@ -49,7 +49,7 @@ export const readCollections = async (path: string) => {
 /**
  * Writes the current collections to disk
  */
-export const writeCollections = async (osuPath: string, collections: Collections) => {
+export const writeCollections = async (collectionPath: string, collections: Collections) => {
   let writer: OsuWriter;
 
   try {
@@ -70,8 +70,7 @@ export const writeCollections = async (osuPath: string, collections: Collections
     });
 
     const buffer = Buffer.from(writer.buff);
-    const path = osuPath + "/collection.db"
-    await fs.promises.writeFile(path, buffer);
+    await fs.promises.writeFile(collectionPath, buffer);
   } catch(err) {
     console.log(err)
   }

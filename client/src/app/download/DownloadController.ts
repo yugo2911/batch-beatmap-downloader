@@ -3,15 +3,16 @@ import axios from "axios";
 import { DownloadStatus } from "../../models/api";
 import { serverUri } from "../ipc/main";
 import { shouldBeClosed, window } from "../../main";
-import { getDownloadPath, getMaxConcurrentDownloads, getSongsFolder, getTempPath } from "../settings";
-import { beatmapIds, loadBeatmaps } from "../beatmaps";
+import { getSongsFolder, getTempPath } from "../settings";
 import { clientId, setDownloadStatus } from "./settings";
-import { addCollection } from "../collection/collection";
+import { addCollection } from "@/app/clients/stable/collection/collection";
 import { emitStatus } from "./downloads";
 import { DownloadIPC } from './ipc';
-import settings from 'electron-settings';
 import fs from 'fs';
 import path from 'path';
+import { Client } from "@/app/clients/client";
+import { StableClient } from "@/app/clients/stable";
+import { Application } from "@/app/application";
 
 enum Status {
   FINISHED,
@@ -26,6 +27,7 @@ export class DownloadController {
   private status: DownloadStatus;
   private startTime: Date;
   private downloadedSinceResume = 0;
+  private downloadPath: string;
 
   private concurrentDownloads: number = 3;
   private id: string;
@@ -64,8 +66,10 @@ export class DownloadController {
   public removeIds(ids: number[]) {
     this.ids = this.ids.filter(id => !ids.includes(id))
     this.status.all = this.ids;
-    setDownloadStatus(this)
-    emitStatus();
+
+    const application = Application.instance;
+    application.downloads.setStatus(this.id, this.status);
+    application.emitDownloadStatus();
   }
 
   public async createCollection(collectionName: string) {
@@ -85,16 +89,22 @@ export class DownloadController {
   }
 
   public async resume() {
+    const application = Application.instance;
+    const settings = application.settings.all();
+    const client = application.client;
+
     this.ipc = new DownloadIPC();
     this.startTime = new Date();
     this.downloadedSinceResume = 0;
     this.status.paused = false
-    emitStatus()
 
-    this.concurrentDownloads = await getMaxConcurrentDownloads()
+    application.emitDownloadStatus();
+
+    this.concurrentDownloads = settings.maxConcurrentDownloads;
     this.updateDownload("resume")
 
-    await loadBeatmaps();
+    const beatmaps = await client.loadBeatmaps();
+    // await loadBeatmaps();
     const newIds = this.ids.filter((id) => {
       return (
         !this.status.completed.includes(id) &&
@@ -106,7 +116,7 @@ export class DownloadController {
     const skipped: number[] = []
     this.toDownload = newIds.filter(id => {
       if (this.force) return true;
-      const hasMap = beatmapIds.has(id)
+      const hasMap = beatmaps.has(id)
       if (hasMap) skipped.push(id)
       return !hasMap
     })
@@ -115,7 +125,7 @@ export class DownloadController {
 
     const downloads: Promise<Status | (() => Promise<void>)>[] = []
     for (let i = 0; i < this.concurrentDownloads; i++) {
-      downloads.push(this.downloadBeatmapSet(i))
+      downloads.push(this.downloadBeatmapSet(i, client))
     }
 
     const results = await Promise.all(downloads)
@@ -124,7 +134,7 @@ export class DownloadController {
       if (result === Status.FINISHED) {
         // this prevents failed downloads not adding to the progress bar
         this.status.totalProgress = this.status.totalSize;
-        emitStatus()
+        application.emitDownloadStatus()
       }
     }
 
@@ -132,36 +142,9 @@ export class DownloadController {
     await setDownloadStatus(this)
     if (this.ipc) this.ipc.close();
 
-    const enabled = await settings.get("temp") as boolean
-    const autoTemp = await settings.get("autoTemp") as boolean
-    if (enabled && autoTemp) await this.moveTempFiles();
-  }
-
-  private async moveTempFiles() {
-    const tempPath = await getTempPath();
-    const songsPath = await getSongsFolder();
-
-    // move all files in temp path to songs path
-    const files = await fs.promises.readdir(tempPath);
-
-    for (const set of this.status.all) {
-      const oldPath = path.join(tempPath, `${set}.osz`);
-      const newPath = path.join(songsPath, `${set}.osz`);
-      await fs.promises.rename(oldPath, newPath)
+    if (client instanceof StableClient) {
+      await client.moveTempFiles(this.status.completed);
     }
-
-    await Promise.all(files.map(file => {
-      if (!file.endsWith(".osz")) return
-
-      const setId = parseInt(file.split(".osz")[0])
-      if (!this.status.all.includes(setId)) return
-
-      const oldPath = path.join(tempPath, file);
-      const newPath = path.join(songsPath, file);
-      return fs.promises.rename(oldPath, newPath);
-    })).catch(err => {
-      window?.webContents.send("error", err);
-    })
   }
 
   private async postData(url: string, body: unknown) {
@@ -175,7 +158,7 @@ export class DownloadController {
   }
 
   public updateDownload(type: DownloadUpdateV2['Type']) {
-    this.postData(`${serverUri}/v2/metrics/download/update`, {
+    void this.postData(`${serverUri}/v2/metrics/download/update`, {
       Client: clientId,
       Id: this.id,
       Type: type,
@@ -184,9 +167,9 @@ export class DownloadController {
 
   public pause() {
     this.status.paused = true
-    emitStatus()
     this.updateDownload("pause")
     if (this.ipc) this.ipc.close();
+    Application.instance.emitDownloadStatus();
   }
 
   public getDownloadSpeed() {
@@ -204,7 +187,7 @@ export class DownloadController {
         axios.get(`${serverUri}/api`).then(res => {
           if (res.status >= 200 && res.status <= 299) {
             window?.webContents.send("server-down", false)
-            this.resume()
+            void this.resume()
             clearInterval(this.interval)
           }
         })
@@ -216,13 +199,13 @@ export class DownloadController {
     return this.toDownload.shift()
   }
 
-  private async downloadBeatmapSet(index: number): Promise<Status | (() => Promise<void>)> {
+  private async downloadBeatmapSet(index: number, client: Client): Promise<Status | (() => Promise<void>)> {
     if (shouldBeClosed) return Status.PAUSED
     if (this.status.paused) return Status.PAUSED
 
     const setId = this.getNextSetId()
     if (setId === undefined) return Status.FINISHED
-    const path = await getDownloadPath()
+    const path = client.getDownloadPath();
 
     try {
       const before = new Date();
@@ -230,15 +213,14 @@ export class DownloadController {
       const after = new Date();
       const difference = after.getTime() - before.getTime();
 
-      beatmapIds.add(setId);
+      client.beatmapSets.add(setId);
       this.status.completed.push(setId);
       this.status.totalProgress += res.Size;
       this.downloadedSinceResume += res.Size
 
-      const speed = this.getDownloadSpeed()
-      this.status.speed = speed
+      this.status.speed = this.getDownloadSpeed()
 
-      this.postData(`${serverUri}/v2/metrics/download/beatmap`, {
+      void this.postData(`${serverUri}/v2/metrics/download/beatmap`, {
         Client: clientId,
         Id: this.id,
         SetId: setId.toString(),
@@ -253,7 +235,7 @@ export class DownloadController {
       }
     }
 
-    emitStatus()
-    return this.downloadBeatmapSet(index)
+    Application.instance.emitDownloadStatus();
+    return this.downloadBeatmapSet(index, client)
   }
 }

@@ -1,3 +1,4 @@
+
 export type ClientType = "stable" | "lazer" | "manual";
 
 export interface StableClientSettings {
@@ -6,9 +7,6 @@ export interface StableClientSettings {
   altPathEnabled: boolean;
   validPath: boolean;
   beatmapSetCount: number;
-  temp: boolean;
-  tempPath: string;
-  autoTemp: boolean;
 }
 
 export interface LazerClientSettings {
@@ -29,32 +27,10 @@ export interface ClientPathsSettings {
   manual: ManualClientSettings;
 }
 
-export interface DownloadStatus {
-  id: string;
-  paused: boolean;
-  all: number[];
-  completed: number[];
-  failed: number[];
-  skipped: number[];
-  totalSize: number;
-  totalProgress: number;
-  force: boolean;
-  speed: number;
-}
-
-export interface Downloads {
-  [key: string]: {
-    status: DownloadStatus
-  };
-}
-
 export type SettingsObject = {
   darkMode: boolean;
   maxConcurrentDownloads: number;
   autoTransfer: boolean;
   client: ClientType;
   clientPaths: ClientPathsSettings;
-  clientId: string;
-  downloads?: Downloads;
 };
-

@@ -2,138 +2,39 @@ import { debounce } from 'lodash';
 import React, {
   useState, createContext, useEffect, PropsWithChildren, useContext,
 } from 'react';
-
-interface SettingsObject {
-  darkMode: boolean;
-  path: string;
-  altPath: string;
-  altPathEnabled: boolean;
-  beatmapSetCount: number;
-  maxConcurrentDownloads: number;
-  validPath: boolean;
-  autoTransfer: boolean;
-  client: string;
-}
+import { SettingsObject } from "../../models/settings";
 
 export interface Settings {
-  settings: SettingsObject
-
-  toggleDarkMode: (on?: boolean) => void
-  setPath: (path: string) => void;
-  setAltPathEnabled: (enabled: boolean) => void;
-  setAltPath: (path: string) => void;
-  setMaxConcurrentDownloads: (number: number) => void;
-  setClient: (client: string) => void;
+  settings: SettingsObject | null;
+  setSettings: React.Dispatch<React.SetStateAction<SettingsObject>>;
 }
 
 const defaultContext: Settings = {
-  settings: {
-    darkMode: true,
-    path: "",
-    altPath: "",
-    altPathEnabled: false,
-    beatmapSetCount: 0,
-    maxConcurrentDownloads: 5,
-    validPath: false,
-    autoTransfer: false,
-    client: "stable",
-  },
-
-  toggleDarkMode: () => null,
-  setPath: () => null,
-  setAltPathEnabled: () => null,
-  setAltPath: () => null,
-  setMaxConcurrentDownloads: () => null,
-  setClient: () => null,
+  settings: null,
+  setSettings: () => {},
 };
 
 export const SettingsContext = createContext<Settings>(defaultContext);
 
 const SettingsProvider: React.FC<PropsWithChildren<object>> = ({ children }) => {
-  const [settings, setSettings] = useState(defaultContext.settings)
+  const [settings, setSettings] = useState<SettingsObject | null>(null)
 
   useEffect(() => {
     window.electron.getSettings().then((res) => {
-      setSettings({
-        darkMode: res.darkMode as boolean ?? true,
-        path: res.path as string ?? "",
-        altPath: res.altPath as string ?? "",
-        altPathEnabled: res.altPathEnabled as boolean ?? false,
-        beatmapSetCount: res.sets as number ?? 0,
-        maxConcurrentDownloads: res.maxConcurrentDownloads as number ?? 5,
-        validPath: res.validPath as boolean ?? false,
-        autoTransfer: res.autoTransfer as boolean ?? false,
-        client: res.client as string ?? "stable",
-      })
-
-      document.documentElement.classList.toggle('dark', res.darkMode as boolean ?? true);
-    })
+      document.documentElement.classList.toggle('dark', res.darkMode ?? true);
+    });
   }, []);
 
-  const toggleDarkMode = (on?: boolean) => {
-    let newValue = !settings.darkMode
-    if (on !== undefined) newValue = on
-    document.documentElement.classList.toggle('dark', newValue)
-    window.electron.setSetting("darkMode", newValue)
-    setSettings(prev => ({ ...prev, darkMode: newValue }))
-  };
-
-  const handleSetPath = async (path: string) => {
-    const [validPath, beatmapSetCount] = await window.electron.setSetting("path", path)
-    setSettings(prev => ({
-      ...prev,
-      path,
-      validPath,
-      beatmapSetCount
-    }))
-  }
-
-  const handleSetAltPath = async (path: string) => {
-    const beatmapSetCount = await window.electron.setSetting("altPath", path)
-    setSettings(prev => ({
-      ...prev,
-      altPath: path,
-      beatmapSetCount
-    }))
-  }
-
-  const handleSetAltPathEnabled = async (enabled: boolean) => {
-    const beatmapSetCount = await window.electron.setSetting("altPathEnabled", enabled)
-    setSettings(prev => ({
-      ...prev,
-      altPathEnabled: enabled,
-      beatmapSetCount
-    }))
-  }
-
-  const handleSetClient = async (client: string) => {
-    await window.electron.setSetting("client", client)
-    setSettings(prev => ({
-      ...prev,
-      client
-    }))
-  }
-
-  const debouncedSetMaxConcurrentDownloads = debounce((value: number) => window.electron.setSetting("maxConcurrentDownloads", value), 500)
-
-  const handleSetMaxConcurrentDownloads = (number: number) => {
-    debouncedSetMaxConcurrentDownloads(number)
-    setSettings(prev => ({
-      ...prev,
-      maxConcurrentDownloads: number
-    }))
+  function handleSetSettings(newSettings: SettingsObject) {
+    setSettings(newSettings);
+    window.electron.setSettings(newSettings);
   }
 
   return (
     <SettingsContext.Provider
       value={{
         settings,
-        toggleDarkMode,
-        setPath: handleSetPath,
-        setAltPathEnabled: handleSetAltPathEnabled,
-        setAltPath: handleSetAltPath,
-        setMaxConcurrentDownloads: handleSetMaxConcurrentDownloads,
-        setClient: handleSetClient,
+        setSettings,
       }}
     >
       {children}
