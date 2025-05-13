@@ -1,12 +1,10 @@
 import fs from "fs";
 import os from "os";
-import { Client } from "@/app/clients/client";
+import { Client } from "../client";
 import path from "path";
-import settings from "electron-settings";
-import { readCollections, writeCollections } from "@/app/clients/stable/collection/parse";
-import { window } from "@/main";
+import { readCollections, writeCollections } from "./collection/parse";
 import { cloneDeep } from "lodash";
-import { Application } from "@/app/application";
+import { Application } from "../../application";
 
 export class StableClient extends Client {
   public getRootPath() {

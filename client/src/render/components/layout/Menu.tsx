@@ -17,7 +17,7 @@ interface PropTypes {
 }
 
 export const Menu = ({ version }: PropTypes) => {
-  const pathname = window.location.pathname;
+  const { pathname } = useLocation();
 
   const pages = [
     { link: "/", title: "Home", icon: <HomeIcon /> },
@@ -30,7 +30,7 @@ export const Menu = ({ version }: PropTypes) => {
   const links = [
     { link: "https://discord.gg/3nj6cKzynK", title: "Discord" },
     { link: "https://www.buymeacoffee.com/nzbasic", title: "Donate" },
-  ]
+  ];
 
   return (
     <div
@@ -49,10 +49,15 @@ export const Menu = ({ version }: PropTypes) => {
             <Link
               key={link}
               to={link}
-              className={classNames("font-medium text-lg py-3 text-center",
+              className={classNames(
+                "font-medium text-lg py-3 text-center",
                 { "bg-monokai-dark dark:bg-monokai-light": pathname === link },
-                { "dark:hover:bg-monokai-light hover:bg-monokai-dark": pathname !== link },
-            )}>
+                {
+                  "dark:hover:bg-monokai-light hover:bg-monokai-dark":
+                    pathname !== link,
+                },
+              )}
+            >
               <div className="flex items-center justify-between mx-4">
                 {title}
                 {icon}

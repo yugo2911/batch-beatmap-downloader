@@ -14,13 +14,13 @@ export const Temporary = () => {
   const [isWindows, setIsWindows] = useState(true)
 
   const updateData = () => {
-    window.electron.getTempData().then((data) => {
-      setTemp(data.enabled);
-      setTempPath(data.path);
-      setTempCount(data.count);
-      setTempValid(data.valid)
-      setTempAuto(data.auto);
-    });
+    // window.electron.getTempData().then((data) => {
+    //   setTemp(data.enabled);
+    //   setTempPath(data.path);
+    //   setTempCount(data.count);
+    //   setTempValid(data.valid)
+    //   setTempAuto(data.auto);
+    // });
   };
 
   useEffect(() => {
@@ -40,7 +40,7 @@ export const Temporary = () => {
   };
 
   const handleResetPath = () => {
-    window.electron.resetTempPath().then(() => updateData());
+    // window.electron.resetTempPath().then(() => updateData());
   };
 
   const handleSetTempAuto = (auto: boolean) => {

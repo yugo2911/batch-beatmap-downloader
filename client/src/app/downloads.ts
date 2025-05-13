@@ -1,12 +1,8 @@
-import { DownloadController } from "@/app/download/DownloadController";
+import { DownloadController } from "./download/DownloadController";
 import { DownloadStatus } from "@/models/api";
-import { SettingsService } from "@/app/settings";
-import { Client } from "@/app/clients/client";
-import { unsetDownload } from "@/app/download/settings";
-import { emitStatus } from "@/app/download/downloads";
-import { Application } from "@/app/application";
-import { convertStatus } from "@/app/download/util";
-import { window } from "@/main";
+import { SettingsService } from "./settings";
+import { Client } from "./clients/client";
+import { Application } from "./application";
 
 export class DownloadsService {
   private settingsService: SettingsService;
@@ -137,7 +133,7 @@ export class DownloadsService {
     }
 
     this.unset(id)
-    emitStatus()
+    Application.instance.emitDownloadStatus();
   }
 
   public getStatuses(): DownloadStatus[] {

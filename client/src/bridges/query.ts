@@ -1,9 +1,7 @@
-import {
-  ipcRenderer,
-} from "electron";
-import { BeatmapDetails, DownloadDetails, QueryOrder } from "../models/api";
-import { Node } from "../models/filter";
-import { Metrics, MetricsV2 } from "../models/metrics";
+import { ipcRenderer } from "electron";
+import { BeatmapDetails, DownloadDetails, QueryOrder } from "@/models/api";
+import { Node } from "@/models/filter";
+import { Metrics, MetricsV2 } from "@/models/metrics";
 import { handleGenericError } from "./main";
 
 export const handleQuery = async (node: Node, limit?: number, order?: QueryOrder) => {

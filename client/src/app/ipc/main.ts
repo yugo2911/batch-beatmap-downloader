@@ -10,7 +10,7 @@ import {
   handleResumeDownloads,
   handleStartDownload
 } from "./downloads";
-import { handleGetSettings, handleSetSetting } from "./settings";
+import { handleGetSettings, handleSetClientSettings, handleSetSetting } from "./settings";
 import { handleGetBeatmapDetails, handleGetMetrics, handleQuery } from "./query";
 import { handleBrowse, handleGetPlatform } from "./os";
 
@@ -32,6 +32,8 @@ ipcMain.handle("move-all-downloads", handleMoveAllDownloads);
 
 ipcMain.handle("get-settings", handleGetSettings);
 ipcMain.handle("set-setting", handleSetSetting);
+ipcMain.handle("set-settings", handleSetSetting);
+ipcMain.handle("set-client-settings", handleSetClientSettings);
 
 ipcMain.handle("query", handleQuery);
 ipcMain.handle("get-metrics", handleGetMetrics)

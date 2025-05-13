@@ -59,6 +59,9 @@ importers:
       compress-json:
         specifier: ^3.1.1
         version: 3.1.1
+      deepmerge:
+        specifier: ^4.3.1
+        version: 4.3.1
       electron-is-dev:
         specifier: ^3.0.1
         version: 3.0.1
@@ -177,6 +180,9 @@ importers:
       '@electron-forge/shared-types':
         specifier: ^7.8.0
         version: 7.8.0
+      '@types/deepmerge':
+        specifier: ^2.2.3
+        version: 2.2.3
       '@types/node':
         specifier: ^22.15.14
         version: 22.15.14
@@ -1947,6 +1953,10 @@ packages:
 
   '@types/conventional-commits-parser@5.0.1':
     resolution: {integrity: sha512-7uz5EHdzz2TqoMfV7ee61Egf5y6NkcO4FB/1iCCQnbeiI1F3xzv3vK5dBCXUCLQgGYS+mUeigK1iKQzvED+QnQ==}
+
+  '@types/deepmerge@2.2.3':
+    resolution: {integrity: sha512-ct4srnukH/SHdVPyJIFV73YJIt9PTYTaqQbjrCvRrbc9LxHdGcJb132SuWwnDTPyx5UjCVS/I00wj0i5IXfqSA==}
+    deprecated: This is a stub types definition. deepmerge provides its own type definitions, so you do not need this installed.
 
   '@types/electron-settings@4.0.2':
     resolution: {integrity: sha512-3PmWvZey4q9ATQ+L+eJG5tE8r/3MOhcsFRAxkBKjnlnWGDmEjMW2otMudbFG+vi/ozx2FlKbTZ4B5dJHHMlENw==}
@@ -9223,6 +9233,10 @@ snapshots:
     dependencies:
       '@types/node': 22.15.14
     optional: true
+
+  '@types/deepmerge@2.2.3':
+    dependencies:
+      deepmerge: 4.3.1
 
   '@types/electron-settings@4.0.2(electron@36.1.0)':
     dependencies:

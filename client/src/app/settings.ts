@@ -1,6 +1,7 @@
 import settings from "electron-settings";
 import { ClientType, SettingsObject } from "../models/settings";
 import { v4 as uuid } from "uuid";
+import merge from 'deepmerge';
 
 export class SettingsService {
   private _settings: SettingsObject;
@@ -59,13 +60,21 @@ export class SettingsService {
     settings.setSync(`clientPaths.${client}`, newSettings);
   }
 
-
   public getClientSettings<C extends ClientType>(client: C) {
     return this._settings.clientPaths[client];
   }
 
   public all() {
     return this._settings;
+  }
+
+  public merge(s: Partial<SettingsObject>) {
+    // merge, including nested objects
+    const newSettings = merge(this._settings, s);
+
+    this._settings = newSettings;
+    // @ts-expect-error eslint-disable-next-line
+    settings.setSync(newSettings);
   }
 
   public dangerousUnset(key: string) {

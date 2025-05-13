@@ -1,11 +1,8 @@
 import settings from "electron-settings";
-import { cloneDeep } from "lodash";
-import { readCollections, writeCollections } from "./parse";
-import { window } from '../../../../main'
+import { readCollections } from "./parse";
 import axios from "axios";
-import { serverUri } from "../../../ipc/main";
-import { BeatmapHashMap } from "../../../../models/api";
-import { beatmapIds, loadBeatmaps } from "../../../beatmaps";
+import { serverUri } from "@/app/ipc/main";
+import { BeatmapHashMap } from "@/models/api";
 
 export const checkCollections = async () => {
   const osuPath = await settings.get("path") as string;
@@ -23,9 +20,10 @@ export const checkCollections = async () => {
   const serverHashes = new Map<string, [number, number]>(Object.entries(data))
   const missing: number[] = []
   let totalSize = 0;
-  await loadBeatmaps()
+  // await loadBeatmaps()
 
-  const ownedSetIds = new Set(beatmapIds)
+  // todo
+  const ownedSetIds = new Set()
 
   collectionMapHashes.forEach(hash => {
     if (serverHashes.has(hash)) {

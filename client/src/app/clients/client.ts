@@ -1,4 +1,4 @@
-import { SettingsService } from "@/app/settings";
+import { SettingsService } from "../settings";
 
 export abstract class Client {
   protected _beatmapSets: Set<number>;

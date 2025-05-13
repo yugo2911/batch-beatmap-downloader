@@ -4,6 +4,7 @@ import {
   OpenExternalOptions,
 } from "electron";
 
+export const handleGetVersion = () => ipcRenderer.invoke("get-version") as Promise<string>;
 export const handleBrowse = () => ipcRenderer.invoke("browse") as Promise<Electron.OpenDialogReturnValue>;
 export const handleOpenUrl = (url: string, options?: OpenExternalOptions) => shell.openExternal(url, options);
 export const handleQuit = () => ipcRenderer.send("quit");

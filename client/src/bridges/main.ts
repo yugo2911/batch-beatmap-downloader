@@ -17,14 +17,10 @@ import {
 } from "./downloads";
 import { handleGetBeatmapDetails, handleGetMetrics, handleQuery } from "./query";
 import {
-  handleCheckValidPath,
   handleGetSettings,
-  handleGetTempData,
-  handleGetVersion,
-  handleLoadBeatmaps,
-  handleResetTempPath,
   handleSetSetting,
   handleSetSettings,
+  handleSetClientSettings
 } from "./settings";
 import {
   handleBrowse,
@@ -32,7 +28,8 @@ import {
   handleListenForErrors,
   handleListenForServerDown,
   handleOpenUrl,
-  handleQuit
+  handleQuit,
+  handleGetVersion,
 } from "./system";
 
 export const handleGenericError = (e: unknown) => {
@@ -52,13 +49,12 @@ export const electronBridge = {
   browse: handleBrowse,
   quit: handleQuit,
   getPlatform: handleGetPlatform,
-
   getVersion: handleGetVersion,
+
   getSettings: handleGetSettings,
-  setSettings: handleSetSettings,
-  checkValidPath: handleCheckValidPath,
-  loadBeatmaps: handleLoadBeatmaps,
   setSetting: handleSetSetting,
+  setSettings: handleSetSettings,
+  setClientSettings: handleSetClientSettings,
 
   startDownload: handleStartDownload,
   createDownload: handleCreateDownload,
@@ -69,8 +65,6 @@ export const electronBridge = {
   deleteDownload: handleDeleteDownload,
   getDownloadsStatus: handleGetDownloadsStatus,
   checkCollections: handleCheckCollections,
-  getTempData: handleGetTempData,
-  resetTempPath: handleResetTempPath,
   moveTempDownloads: handleMoveAllDownloads,
 
   listenForDownloads: handleListenForDownloads,

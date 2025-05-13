@@ -1,12 +1,12 @@
-import { Client } from "@/app/clients/client";
-import { SettingsService } from "@/app/settings";
-import { StableClient } from "@/app/clients/stable";
-import { ManualClient } from "@/app/clients/manual";
-import { LazerClient } from "@/app/clients/lazer";
-import { ClientType } from "@/models/settings";
-import { DownloadsService } from "@/app/downloads";
-import { convertStatus } from "@/app/download/util";
-import { window } from "@/main";
+import { Client } from "./clients/client";
+import { SettingsService } from "./settings";
+import { StableClient } from "./clients/stable";
+import { ManualClient } from "./clients/manual";
+import { LazerClient } from "./clients/lazer";
+import { ClientType } from "../models/settings";
+import { DownloadsService } from "./downloads";
+import { convertStatus } from "./download/util";
+import { window } from "../main";
 
 export class Application {
   private static _instance: Application;
@@ -48,6 +48,10 @@ export class Application {
 
   public get client(): Client {
     return this._client;
+  }
+
+  public get clientId() {
+    return this._clientId;
   }
 
   public get settings() {

@@ -22,28 +22,15 @@ const clients = [
 
 export const Settings = () => {
   const { downloads } = useDownload();
-  console.log(downloads);
-
-  const {
-    settings,
-    setStableMainPath,
-    setStableAltPath,
-    setStableAltPathEnabled,
-    setLazerSongsPath,
-    setManualDownloadPath,
-    toggleDarkMode,
-    setMaxConcurrentDownloads,
-    setClient,
-  } = useSettings();
+  const { settings, setSetting, setClientSetting } = useSettings();
+  if (!settings) return null;
 
   const {
     darkMode,
-    beatmapSetCount,
     maxConcurrentDownloads,
     client,
     clientPaths,
-    validPath,
-  } = settings;
+  } = settings || {};
 
   const stableSettings = clientPaths.stable;
   const lazerSettings = clientPaths.lazer;
@@ -63,7 +50,7 @@ export const Settings = () => {
               'box-selector-on': client.value === settings.client,
               'box-selector-off': client.value !== settings.client,
             })}
-            onClick={() => setClient(client.value)}
+            onClick={() => setSetting("client", client.value)}
           >
             {client.name}
           </button>
@@ -75,14 +62,14 @@ export const Settings = () => {
           <>
             <div className="flex items-center gap-2">
               <span className="w-52">osu!stable Songs Path:</span>
-              <Browse path={stableSettings.mainPath} update={setStableMainPath} />
-              {validPath && <span>{beatmapSetCount} Beatmap Sets Found</span>}
+              <Browse path={stableSettings.mainPath} update={() => null} />
+              {stableSettings.validPath && <span>{stableSettings.beatmapSetCount} Beatmap Sets Found</span>}
             </div>
             <div className="flex items-center gap-2">
               <span className="w-52">Alt. Songs Path (stable):</span>
-              <Switch onChange={(mode) => setStableAltPathEnabled(mode)} checked={stableSettings.altPathEnabled} />
-              {stableSettings.altPathEnabled && <Browse path={stableSettings.altPath} update={setStableAltPath} />}
-              {stableSettings.altPathEnabled && validPath && <span>({beatmapSetCount} total sets)</span>}
+              <Switch onChange={(mode) => null} checked={stableSettings.altPathEnabled} />
+              {stableSettings.altPathEnabled && <Browse path={stableSettings.altPath} update={() => null} />}
+              {stableSettings.altPathEnabled && stableSettings.validPath && <span>({stableSettings.beatmapSetCount} total sets)</span>}
             </div>
           </>
         )}
@@ -90,30 +77,30 @@ export const Settings = () => {
         {client === 'lazer' && (
           <div className="flex items-center gap-2">
             <span className="w-52">osu!lazer Songs Path:</span>
-            <Browse path={lazerSettings.songsPath} update={setLazerSongsPath} />
-            {validPath && <span>{beatmapSetCount} Beatmap Sets Found</span>}
+            <Browse path={lazerSettings.songsPath} update={() => null} />
+            {/*{validPath && <span>{beatmapSetCount} Beatmap Sets Found</span>}*/}
           </div>
         )}
 
         {client === 'manual' && (
           <div className="flex items-center gap-2">
             <span className="w-52">Download Path:</span>
-            <Browse path={manualSettings.downloadPath} update={setManualDownloadPath} />
-            {validPath && <span>Path is valid</span>}
+            <Browse path={manualSettings.downloadPath} update={() => null} />
+            {/*{validPath && <span>Path is valid</span>}*/}
           </div>
         )}
 
-        <div className="flex items-center gap-2">
-          <span className="w-52">Dark Mode:</span>
-          <Switch onChange={toggleDarkMode} checked={darkMode} />
-        </div>
+        {/*<div className="flex items-center gap-2">*/}
+        {/*  <span className="w-52">Dark Mode:</span>*/}
+        {/*  <Switch onChange={} checked={darkMode} />*/}
+        {/*</div>*/}
 
         <div className="flex items-center gap-2">
           <span className="w-52">Max Concurrent Downloads:</span>
           <Tooltip title={parallelTooltip} />
           <NumericInput
             value={maxConcurrentDownloads}
-            onChange={setMaxConcurrentDownloads}
+            onChange={() => null}
             min={1}
             max={25}
           />

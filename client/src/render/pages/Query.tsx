@@ -1,28 +1,27 @@
 import React, { useState } from "react";
 import { cloneDeep } from "lodash";
 import { toast } from "react-toastify";
-import ReactDOM, { createPortal } from "react-dom";
+import { createPortal } from "react-dom";
 import { CircularProgress } from "@mui/material";
 
-import { sampleTree } from "../../models/filter";
-import { RuleType } from "../../models/rules";
-import { Node, Group } from "../../models/filter";
-import { Settings } from "../components/Settings";
-import { DownloadDetails, QueryOrder } from "../../models/api";
-import { useStickyState } from "../hooks/useStickyState";
-import { DownloadSettings } from "../components/DownloadSettings";
-import { InvalidPath } from "../components/InvalidPath";
-import { SimpleFilter } from "../components/query/SimpleFilter";
-import { AdvancedFilter } from "../components/query/AdvancedFilter";
-import Button from "../components/util/Button";
-import { treeIsCompatibleWithSimpleMode } from "../../models/simple";
-import { QuerySettings } from "../components/query/QuerySettings";
-import { useSettings } from "../context/SettingsProvider";
-import { ResultTable } from "../components/query/ResultTable";
+import { sampleTree } from "@/models/filter";
+import { RuleType } from "@/models/rules";
+import { Node, Group } from "@/models/filter";
+import { Settings } from "@/components/Settings";
+import { DownloadDetails, QueryOrder } from "@/models/api";
+import { useStickyState } from "@/hooks/useStickyState";
+import { DownloadSettings } from "@/components/DownloadSettings";
+import { InvalidPath } from "@/components/InvalidPath";
+import { SimpleFilter } from "@/components/query/SimpleFilter";
+import { AdvancedFilter } from "@/components/query/AdvancedFilter";
+import Button from "@/components/util/Button";
+import { treeIsCompatibleWithSimpleMode } from "@/models/simple";
+import { QuerySettings } from "@/components/query/QuerySettings";
+import { useSettings } from "@/context/SettingsProvider";
+import { ResultTable } from "@/components/query/ResultTable";
 
 export const Query = () => {
-  const { settings } = useSettings()
-  const { validPath } = settings;
+  const { validPath } = useSettings()
   const [tree, setTree] = useStickyState<Node>(sampleTree, "tree");
   const [result, setResult] = useState<DownloadDetails | null>(null);
   const [loading, setLoading] = useState(false);

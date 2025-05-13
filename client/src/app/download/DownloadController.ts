@@ -1,18 +1,12 @@
-import { BeatmapDownloadV2, DownloadUpdateV2 } from './../../models/api-v2';
+import { BeatmapDownloadV2, DownloadUpdateV2 } from '@/models/api-v2';
 import axios from "axios";
-import { DownloadStatus } from "../../models/api";
+import { DownloadStatus } from "@/models/api";
 import { serverUri } from "../ipc/main";
 import { shouldBeClosed, window } from "../../main";
-import { getSongsFolder, getTempPath } from "../settings";
-import { clientId, setDownloadStatus } from "./settings";
-import { addCollection } from "@/app/clients/stable/collection/collection";
-import { emitStatus } from "./downloads";
 import { DownloadIPC } from './ipc';
-import fs from 'fs';
-import path from 'path';
-import { Client } from "@/app/clients/client";
-import { StableClient } from "@/app/clients/stable";
-import { Application } from "@/app/application";
+import { Client } from "../clients/client";
+import { StableClient } from "../clients/stable";
+import { Application } from "../application";
 
 enum Status {
   FINISHED,
@@ -72,20 +66,12 @@ export class DownloadController {
     application.emitDownloadStatus();
   }
 
-  public async createCollection(collectionName: string) {
-    await addCollection(this.hashes, collectionName);
-  }
-
   public setStatus(status: DownloadStatus): void {
     this.status = status;
   }
 
   public getStatus(): DownloadStatus {
     return this.status;
-  }
-
-  public setConcurrentDownloads(number: number) {
-    this.concurrentDownloads = number;
   }
 
   public async resume() {
@@ -139,7 +125,7 @@ export class DownloadController {
     }
 
     if (!this.status.paused) this.updateDownload("delete")
-    await setDownloadStatus(this)
+    application.downloads.setStatus(this.id, this.status);
     if (this.ipc) this.ipc.close();
 
     if (client instanceof StableClient) {
@@ -159,7 +145,7 @@ export class DownloadController {
 
   public updateDownload(type: DownloadUpdateV2['Type']) {
     void this.postData(`${serverUri}/v2/metrics/download/update`, {
-      Client: clientId,
+      Client: Application.instance.clientId,
       Id: this.id,
       Type: type,
     } as DownloadUpdateV2)
@@ -221,7 +207,7 @@ export class DownloadController {
       this.status.speed = this.getDownloadSpeed()
 
       void this.postData(`${serverUri}/v2/metrics/download/beatmap`, {
-        Client: clientId,
+        Client: Application.instance.clientId,
         Id: this.id,
         SetId: setId.toString(),
         Time: difference / Math.max(this.concurrentDownloads, 1)

@@ -1,17 +1,12 @@
 import React from "react";
-import { BasicStatus } from "../components/BasicStatus";
-import { InvalidPath } from "../components/InvalidPath";
-import { FindMissingMaps } from "../components/MissingMaps";
-import { SampleFilters } from "../components/SampleFilters";
-import { Settings } from "../components/Settings";
-import { Temporary } from "../components/Temporary";
-import { useSettings } from "../context/SettingsProvider";
+import { BasicStatus } from "@/components/BasicStatus";
+import { Settings } from "@/components/Settings";
+import { useSettings } from "@/context/SettingsProvider";
 
 const videoUrl = "https://www.youtube.com/watch?v=_Nuz0TVF1IY"
 
 export const Home = () => {
-  const { settings } = useSettings();
-  const { validPath } = settings
+  const { settings, validPath } = useSettings();
 
   return (
     <div className="flex flex-col gap-4">

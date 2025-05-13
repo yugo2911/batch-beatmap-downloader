@@ -17,9 +17,12 @@
     "paths": {
       "*": ["node_modules/*"],
       "@/*": ["./src/*"],
-      "@assets/*": ["./assets/*"],
-      "@containers/*": ["./src/render/containers/*"],
-      "@components/*": ["./src/render/components/*"],
+      "@/assets/*": ["./assets/*"],
+      "@/containers/*": ["./src/render/containers/*"],
+      "@/components/*": ["./src/render/components/*"],
+      "@/hooks/*": ["./src/render/hooks/*"],
+      "@/utils/*": ["./src/render/utils/*"],
+      "@/context/*": ["./src/render/context/*"],
     }
   },
   "include": [

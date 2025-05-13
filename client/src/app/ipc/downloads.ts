@@ -3,13 +3,9 @@ import { currentQueryResult, currentDownloadDetails } from './query';
 import { v4 as uuid } from 'uuid'
 import axios from 'axios';
 import { DownloadStartV2 } from "@/models/api-v2";
-import { clientId } from '../download/settings';
-import { getSongsFolder, getTempPath } from '../settings';
-import fs from 'fs';
-import path from 'path';
-import { Application } from "@/app/application";
-import { convertStatus } from "@/app/download/util";
-import { StableClient } from "@/app/clients/stable";
+import { Application } from "../application";
+import { convertStatus } from "../download/util";
+import { StableClient } from "../clients/stable";
 
 export const handleStartDownload = async (event: E, force: boolean, collectionName: string) => {
   const app = Application.instance;
@@ -24,7 +20,7 @@ export const handleStartDownload = async (event: E, force: boolean, collectionNa
   })
 
   await axios.post(`${serverUri}/v2/metrics/download/start`, {
-    Client: clientId,
+    Client: app.clientId,
     Id: id,
     SizeRemoved: totalSizeForce - size,
   } as DownloadStartV2)

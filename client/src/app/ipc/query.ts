@@ -3,14 +3,14 @@ import { Node } from "@/models/filter";
 import { BeatmapDetails, DownloadDetails, QueryOrder } from "@/models/api";
 import { E, serverUri } from "./main";
 import { MetricsV2 } from "@/models/metrics";
-import { clientId } from "../download/settings";
 import { FilterResponseV2 } from "@/models/api-v2";
-import { Application } from "@/app/application";
+import { Application } from "../application";
 
 export let currentQueryResult: FilterResponseV2;
 export let currentDownloadDetails: DownloadDetails;
 
 export const handleQuery = async (event: E, node: Node, limit?: number, order?: QueryOrder): Promise<DownloadDetails> => {
+  const clientId = Application.instance.clientId;
   const body: { node: Node; by?: string; direction?: string; limit?: number; clientId: string } = { node, ...order, clientId }
   if (limit) {
     body.limit = limit;

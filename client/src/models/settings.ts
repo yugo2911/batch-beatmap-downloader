@@ -58,3 +58,5 @@ export type SettingsObject = {
   downloads?: Downloads;
 };
 
+export type SetClientSetting<T extends ClientType> = (client: T, settings: Partial<ClientPathsSettings[T]>) => void;
+
