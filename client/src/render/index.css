@@ -10,9 +10,29 @@
   width: calc(100% - 13rem);
 }
 
+.column {
+  @apply flex flex-col gap-2;
+}
+
+fieldset {
+  @apply content-box flex flex-col dark:text-white w-full
+}
+
+legend {
+  @apply font-bold text-lg mb-4 float-left rounded;
+}
+
+label {
+  @apply flex items-center gap-2;
+}
+
+label > span {
+  @apply w-52 shrink-0;
+}
+
 input {
-  @apply p-2 bg-gray-50 rounded-md shadow-sm border-gray-300 border text-gray-600 w-full focus:outline-none focus:border-monokai-light2 transition ease-in-out placeholder-gray-500;
-  @apply dark:bg-monokai-light2 dark:border dark:border-monokai-dark dark:placeholder-gray-200 dark:text-gray-200;
+  @apply input-height p-2 bg-gray-50 rounded-md shadow-sm border-gray-300 border text-gray-600 w-full focus:outline-none focus:border-monokai-light2 transition ease-in-out placeholder-gray-500;
+  @apply dark:bg-monokai-light2 dark:border dark:border-gray-600 dark:placeholder-gray-200 dark:text-gray-200;
 }
 
 input:disabled {
@@ -63,6 +83,10 @@ input:disabled {
   @apply block text-sm leading-5 font-medium dark:text-gray-200 text-gray-700;
 }
 
+div:has(> .react-switch-bg) {
+  @apply input-height mt-2.5 !important;
+}
+
 .rc-slider-rail {
   @apply dark:bg-monokai-light2
 }
@@ -72,7 +96,7 @@ input:disabled {
 }
 
 .rc-slider-track {
-  @apply dark:bg-sky-600
+  @apply dark:bg-sky-600;
 }
 
 @layer components {

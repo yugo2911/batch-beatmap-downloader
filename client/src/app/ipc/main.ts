@@ -13,6 +13,7 @@ import {
 import { handleGetSettings, handleSetClientSettings, handleSetSetting } from "./settings";
 import { handleGetBeatmapDetails, handleGetMetrics, handleQuery } from "./query";
 import { handleBrowse, handleGetPlatform } from "./os";
+import { handleGetApplicationStatus } from "./application";
 
 export const serverUri = "https://v2.nzbasic.com";
 export type E = Electron.IpcMainInvokeEvent;
@@ -34,6 +35,8 @@ ipcMain.handle("get-settings", handleGetSettings);
 ipcMain.handle("set-setting", handleSetSetting);
 ipcMain.handle("set-settings", handleSetSetting);
 ipcMain.handle("set-client-settings", handleSetClientSettings);
+
+ipcMain.handle("get-application-status", handleGetApplicationStatus)
 
 ipcMain.handle("query", handleQuery);
 ipcMain.handle("get-metrics", handleGetMetrics)

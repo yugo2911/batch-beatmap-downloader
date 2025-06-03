@@ -5,6 +5,6 @@ export class LazerClient extends Client {
     throw new Error("Method not implemented.");
   }
   isPathValid(): Promise<boolean> {
-    throw new Error("Method not implemented.");
+    return new Promise((res) => res(false));
   }
 }

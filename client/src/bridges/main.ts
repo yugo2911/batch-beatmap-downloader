@@ -31,6 +31,7 @@ import {
   handleQuit,
   handleGetVersion,
 } from "./system";
+import { handleGetApplicationStatus } from "@/bridges/application";
 
 export const handleGenericError = (e: unknown) => {
   if (typeof e === "string") {
@@ -55,6 +56,8 @@ export const electronBridge = {
   setSetting: handleSetSetting,
   setSettings: handleSetSettings,
   setClientSettings: handleSetClientSettings,
+
+  getApplicationStatus: handleGetApplicationStatus,
 
   startDownload: handleStartDownload,
   createDownload: handleCreateDownload,

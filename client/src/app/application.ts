@@ -7,6 +7,7 @@ import { ClientType } from "../models/settings";
 import { DownloadsService } from "./downloads";
 import { convertStatus } from "./download/util";
 import { window } from "../main";
+import { ApplicationError, ApplicationStatus, ErrorCode, Feature } from "@/models/application";
 
 export class Application {
   private static _instance: Application;
@@ -40,6 +41,15 @@ export class Application {
     this._downloads = new DownloadsService(this._settings, this._client);
   }
 
+  public setClientType(type: ClientType) {
+    if (this._clientFactory[type]) {
+      this._client = this._clientFactory[type]();
+      this._downloads.setClient(this._client);
+    } else {
+      throw new Error(`Unknown client type: ${type}`);
+    }
+  }
+
   public set client(client: Client) {
     this._client = client;
 
@@ -70,5 +80,26 @@ export class Application {
     const statuses = this._downloads.getStatuses();
     const mapped = statuses.map(convertStatus);
     this.emit("downloads-status", mapped);
+  }
+
+  public async getStatus(): Promise<ApplicationStatus> {
+    const errors = await this._client.getErrors();
+
+    return errors.reduce((acc, error) => {
+      if (error.disable) {
+        error.disable.forEach(action => {
+          acc.disabled[action] = true;
+        });
+      }
+
+      if (error.code) {
+        acc.errors[error.code] = true;
+      }
+
+      if (error.message) {
+        acc.messages[error.code] = error.message;
+      }
+      return acc;
+    }, { messages: {}, errors: {}, disabled: {} } as ApplicationStatus);
   }
 }

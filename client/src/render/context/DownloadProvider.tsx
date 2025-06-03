@@ -17,8 +17,8 @@ const DownloadsProvider: React.FC<PropsWithChildren<any>> = ({ children }) => {
   const [downloads, setDownloads] = useState<ReportedDownloadStatus[]>([])
 
   useEffect(() => {
-    window.electron.getDownloadsStatus().then(res => setDownloads(res.reverse()))
-    window.electron.listenForDownloads((status) => setDownloads(status.reverse()))
+    window.electron.getDownloadsStatus().then(console.log)
+    window.electron.listenForDownloads(console.log)
   }, [])
 
   return (

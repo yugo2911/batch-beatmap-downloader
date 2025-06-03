@@ -35,10 +35,7 @@ export const handleCreateDownload = (event: E, ids: number[], size: number, forc
   void Application.instance.downloads.createDownload(uuid(), ids, size, force, hashes, collectionName).resume();
 }
 
-export const handleGetDownloadsStatus = () => {
-  Application.instance.downloads.getStatuses().map(convertStatus);
-};
-
+export const handleGetDownloadsStatus = () => Application.instance.downloads.getStatuses().map(convertStatus);
 export const handleResumeDownload = (event: E, downloadId: string) => Application.instance.downloads.resume(downloadId);
 export const handleResumeDownloads = () => Application.instance.downloads.resumeAll();
 export const handlePauseDownload = (event: E, downloadId: string) => Application.instance.downloads.pause(downloadId);

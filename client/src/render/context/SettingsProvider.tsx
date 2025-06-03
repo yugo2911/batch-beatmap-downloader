@@ -1,33 +1,51 @@
 import React, {
   useState, createContext, useEffect, PropsWithChildren, useContext,
 } from 'react';
-import { ClientType, SetClientSetting, SettingsObject } from "@/models/settings";
+import { ClientType, SettingsObject } from "@/models/settings";
+import { ApplicationStatus } from "@/models/application";
 
 export interface Settings {
   settings: SettingsObject | null;
   setSettings: React.Dispatch<React.SetStateAction<SettingsObject>>;
   setSetting: (key: keyof SettingsObject, value: unknown) => void;
   setClientSetting: <T extends ClientType>(client: T, partial: Partial<SettingsObject['clientPaths'][T]>) => void;
-  validPath: boolean;
+  status: ApplicationStatus;
+}
+
+const defaultApplicationStatus: ApplicationStatus = {
+  errors: {},
+  disabled: {},
+  messages: {},
 }
 
 const defaultContext: Settings = {
-  validPath: true,
   settings: null,
   setSettings: () => {},
   setSetting: () => {},
   setClientSetting: () => {},
+  status: defaultApplicationStatus
 };
 
 export const SettingsContext = createContext<Settings>(defaultContext);
 
 const SettingsProvider: React.FC<PropsWithChildren<object>> = ({ children }) => {
   const [settings, setSettings] = useState<SettingsObject | null>(null)
+  const [status, setStatus] = useState<ApplicationStatus>(defaultApplicationStatus);
 
   async function updateSettings() {
     const res = await window.electron.getSettings();
     setSettings(res);
+
+    await updateStatus();
   }
+
+  async function updateStatus() {
+    const res = await window.electron.getApplicationStatus();
+    setStatus(res);
+  }
+
+  console.log(settings);
+  console.log(status);
 
   useEffect(() => {
     if (!settings) return;
@@ -35,7 +53,7 @@ const SettingsProvider: React.FC<PropsWithChildren<object>> = ({ children }) => 
   }, [settings])
 
   useEffect(() => {
-    void updateSettings();
+    void updateSettings()
   }, []);
 
   async function handleSetSettings(newSettings: SettingsObject) {
@@ -56,11 +74,11 @@ const SettingsProvider: React.FC<PropsWithChildren<object>> = ({ children }) => 
   return (
     <SettingsContext.Provider
       value={{
-        validPath: true,
         settings,
         setSettings,
         setSetting: handleSetSetting,
         setClientSetting: handleSetClientSettings,
+        status,
       }}
     >
       {children}

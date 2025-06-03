@@ -56,6 +56,7 @@ export type SettingsObject = {
   clientPaths: ClientPathsSettings;
   clientId: string;
   downloads?: Downloads;
+  validPath?: boolean;
 };
 
 export type SetClientSetting<T extends ClientType> = (client: T, settings: Partial<ClientPathsSettings[T]>) => void;

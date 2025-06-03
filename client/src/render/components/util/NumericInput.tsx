@@ -11,7 +11,7 @@ export const NumericInput = ({ value, onChange, ...props }: NumericInputProps) =
       {...props}
       type="number"
       placeholder={props.placeholder}
-      className={classNames(props.className, "p-1 px-2")}
+      className={classNames(props.className)}
       value={value.toString()}
       onChange={(event) => onChange(event.target.valueAsNumber)}
     />

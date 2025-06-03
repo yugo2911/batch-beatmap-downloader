@@ -21,7 +21,7 @@ import { useSettings } from "@/context/SettingsProvider";
 import { ResultTable } from "@/components/query/ResultTable";
 
 export const Query = () => {
-  const { validPath } = useSettings()
+  const { status } = useSettings()
   const [tree, setTree] = useStickyState<Node>(sampleTree, "tree");
   const [result, setResult] = useState<DownloadDetails | null>(null);
   const [loading, setLoading] = useState(false);
@@ -121,7 +121,7 @@ export const Query = () => {
   return (
     <div className="flex flex-col w-full gap-4">
       <Settings />
-      {!validPath ? <InvalidPath /> : (
+      {status.errors.invalidPath ? <InvalidPath /> : (
         <>
           <div className="flex items-center gap-4">
             <button className={`${simpleMode ? 'box-selector-on' : 'box-selector-off'}`} onClick={() => handleChangeMode(true)}>Simple Mode</button>
