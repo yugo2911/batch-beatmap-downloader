@@ -193,7 +193,7 @@ export const SimpleFilter: React.FC<PropTypes> = ({ tree, updateTree }) => {
   }
 
   return (
-    <div className="content-box flex flex-col gap-4">
+    <div className="content-box flex flex-col gap-2">
       <div className="flex items-center">
         <label className="min-w-[8rem] label">Text Input</label>
         <Input
@@ -207,7 +207,7 @@ export const SimpleFilter: React.FC<PropTypes> = ({ tree, updateTree }) => {
         <InputItem {...item} onChange={(value) => handleChange(value, item)} value={getValue(tree, item)} />
       ))}
 
-      <div className="flex items-center gap-2 w-full justify-between mt-2">
+      <div className="flex items-center gap-2 w-full justify-between my-2 border-t border-black pt-4">
         {sections.map(item => (
           <div
             key={item.title}

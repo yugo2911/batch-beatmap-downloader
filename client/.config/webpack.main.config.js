@@ -16,5 +16,7 @@ module.exports = {
     extensions: [".js", ".jsx", ".json", ".ts", ".tsx"],
   },
 
+  // externals: "realm",
+
   plugins: plugins,
 };

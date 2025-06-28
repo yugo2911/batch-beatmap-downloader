@@ -11,6 +11,7 @@ import {
   DropdownOption,
 } from "../../../../models/rules";
 import React from "react";
+import { styles } from "@/components/util/Select";
 
 interface PropTypes {
   rule: Rule;
@@ -35,9 +36,10 @@ const RuleInputDropdown = ({ rule, onChange }: PropTypes) => {
     <Select
       className="w-40 my-react-select-container"
       classNamePrefix="my-react-select"
+      styles={styles}
       options={dropdownMap.get(rule.type as RuleType)}
       value={selectedOption}
-      onChange={(e) => onChange({ ...rule, value: e?.value ?? "" })}
+      onChange={(e: DropdownOption) => onChange({ ...rule, value: e?.value ?? "" })}
     />
   );
 };

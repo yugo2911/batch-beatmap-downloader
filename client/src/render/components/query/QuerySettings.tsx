@@ -4,6 +4,9 @@ import Switch from "react-switch";
 import Select from "react-select";
 import { QueryOrder } from "../../../models/api";
 import { NumericInput } from "../util/NumericInput";
+import { styles } from "@/components/util/Select";
+import { DropdownOption } from "@/models/rules";
+import { YesNo } from "@/components/util/YesNo";
 
 interface PropTypes {
   limit: number | undefined;
@@ -55,21 +58,18 @@ export const QuerySettings = ({ limit, updateLimit, order, updateOrder }: PropTy
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-2">
       <div className="flex items-center h-10">
         <label className="w-32 label">Query Limit</label>
-        <Switch
-          onChange={(enabled) => enable(enabled)}
-          checked={limit !== undefined}
-        />
+        <YesNo value={limit !== undefined} onChange={enable} />
       </div>
 
       {limit && (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
           <div className="flex items-center">
             <label className="w-32">Limit</label>
             <NumericInput
-              className="input-height p-2 w-40 border-gray-300 border rounded focus:outline-blue-500"
+              className="input-height p-2 w-40 border-gray-300 border focus:outline-blue-500"
               value={limit}
               onChange={(n) => updateLimit(Math.max(1, n || 1))}
               step={1}
@@ -84,15 +84,17 @@ export const QuerySettings = ({ limit, updateLimit, order, updateOrder }: PropTy
               classNamePrefix="my-react-select"
               options={orderOptions}
               value={orderOptions.find(item => order?.by === item.value)}
-              onChange={(e) => e && order && updateOrder({ ...order, by: e.value })}
+              onChange={(e: DropdownOption) => e && order && updateOrder({ ...order, by: e.value })}
+              styles={styles}
             />
             <Select
               menuPlacement="top"
-              className="w-40 ml-4 my-react-select-container"
+              className="w-40 ml-2 my-react-select-container"
               classNamePrefix="my-react-select"
               options={directionOptions}
               value={directionOptions.find(item => order?.direction === item.value)}
-              onChange={(e) => e && order && updateOrder({ ...order, direction: e.value })}
+              onChange={(e: DropdownOption) => e && order && updateOrder({ ...order, direction: e.value })}
+              styles={styles}
             />
           </div>
         </div>

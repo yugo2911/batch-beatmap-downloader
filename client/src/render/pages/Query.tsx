@@ -140,7 +140,7 @@ export const Query = () => {
             />
             <div className="flex gap-2 items-center">
               {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
-              <Button color="blue" onClick={exportData} disabled={loading}>
+              <Button className="input-height px-4" color="blue" onClick={exportData} disabled={loading}>
                 Search
               </Button>
               {loading && <CircularProgress size={25} />}

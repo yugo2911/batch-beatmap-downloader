@@ -1,3 +1,7 @@
+// https://github.com/electron/forge/issues/3052#issuecomment-1660379799
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+__webpack_require__.ab = __dirname + "/native_modules/";
+
 import { app, BrowserWindow, nativeTheme, shell } from "electron";
 import isDev from "electron-is-dev";
 import Store from "electron-persist-secure/lib/store";

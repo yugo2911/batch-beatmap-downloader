@@ -3,7 +3,7 @@
 @import "tailwindcss/utilities";
 
 .input-height {
-  height: 2.35rem;
+  height: 34px;
 }
 
 .main {
@@ -31,7 +31,7 @@ label > span {
 }
 
 input {
-  @apply input-height p-2 bg-gray-50 rounded-md shadow-sm border-gray-300 border text-gray-600 w-full focus:outline-none focus:border-monokai-light2 transition ease-in-out placeholder-gray-500;
+  @apply input-height p-2 bg-gray-50 rounded shadow-sm border-gray-300 border text-gray-600 w-full focus:outline-none focus:border-monokai-light2 transition ease-in-out placeholder-gray-500;
   @apply dark:bg-monokai-light2 dark:border dark:border-gray-600 dark:placeholder-gray-200 dark:text-gray-200;
 }
 
@@ -40,7 +40,7 @@ input:disabled {
 }
 
 .button {
-  @apply  hover:bg-monokai-blue bg-monokai-blue text-white cursor-pointer transition-colors
+  @apply hover:bg-monokai-blue bg-monokai-blue text-white cursor-pointer transition-colors
 }
 
 .box-selector {
@@ -48,7 +48,7 @@ input:disabled {
 }
 
 .box-selector-off {
-  @apply box-selector button hover:text-white cursor-pointer text-black dark:text-white dark:bg-monokai-light dark:hover:bg-monokai-blue !border-0;
+  @apply box-selector button hover:text-white cursor-pointer text-black dark:text-white dark:bg-monokai-light dark:hover:bg-monokai-blue border dark:border-monokai-blue border-gray-600 bg-white;
 }
 
 .box-selector-on {
@@ -104,7 +104,7 @@ div:has(> .react-switch-bg) {
   } */
 
   .my-react-select-container .my-react-select__control {
-    @apply bg-gray-50 dark:bg-monokai-light2 rounded-md shadow-sm border border-neutral-300 dark:border-none hover:border-neutral-400;
+    @apply input-height bg-gray-50 dark:bg-monokai-light2 rounded shadow-sm border border-neutral-300 hover:border-neutral-400 dark:border-gray-600
   }
 
   .my-react-select-container .my-react-select__control--is-focused {

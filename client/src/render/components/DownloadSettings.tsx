@@ -5,6 +5,7 @@ import { bytesToFileSize } from "../util/fileSize";
 import { toast } from "react-toastify";
 import Button from "./util/Button";
 import { DownloadDetails } from "../../models/api";
+import { YesNo } from "@/components/util/YesNo";
 
 interface PropTypes {
   result: DownloadDetails;
@@ -32,7 +33,6 @@ export const DownloadSettings = ({ result }: PropTypes) => {
     <div className="flex flex-col gap-4">
       <span className="font-bold text-lg dark:text-white">Download</span>
       <div className="flex flex-col gap-1">
-        <span className="font-medium">Summary</span>
         <div className="flex flex-col gap-0">
           <span>
             {result.beatmaps} Beatmaps ({result.setsForce} Beatmap Sets)
@@ -44,15 +44,14 @@ export const DownloadSettings = ({ result }: PropTypes) => {
         </div>
       </div>
       <div className="flex flex-col gap-1">
-        <span className="font-medium">Settings</span>
         <div className="flex flex-col gap-2">
-          <div className="flex items-center gap-2">
+          <label>
             <span>Force Download All Maps</span>
-            <Switch checked={force} onChange={(e) => setForce(e)} />
-          </div>
-          <div className="flex items-center gap-2">
+            <YesNo value={force} onChange={(e) => setForce(e)} />
+          </label>
+          <label>
             <span>Create Collection</span>
-            <Switch checked={collection} onChange={(e) => setCollection(e)} />
+            <YesNo value={collection} onChange={(e) => setCollection(e)} />
             {collection && (
               <input
                 className="input-height p-2 w-40 border-gray-300 border rounded focus:outline-blue-500"
@@ -61,12 +60,12 @@ export const DownloadSettings = ({ result }: PropTypes) => {
                 onChange={(e) => setCollectionName(e.target.value)}
               />
             )}
-          </div>
+          </label>
         </div>
       </div>
       <div className="flex items-center">
         <Link className={`${downloadDisabled ? 'pointer-events-none' : ''}`} to="/downloads">
-          <Button color="green" onClick={download} disabled={downloadDisabled}>
+          <Button className="input-height px-4" color="green" onClick={download} disabled={downloadDisabled}>
             Download
           </Button>
         </Link>

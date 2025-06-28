@@ -39,34 +39,17 @@ export const Settings = () => {
   const lazerSettings = clientPaths.lazer;
   const manualSettings = clientPaths.manual;
 
-  const path = client === 'stable' ? stableSettings.mainPath :
-    client === 'lazer' ? lazerSettings.songsPath :
-    client === 'manual' ? manualSettings.downloadPath : '';
-
   function getPath() {
-    if (client === 'stable') {
-      return stableSettings.mainPath;
-    } else if (client === 'lazer') {
-      return lazerSettings.songsPath;
-    } else if (client === 'manual') {
-      return manualSettings.downloadPath;
-    }
-    return '';
+    return clientPaths[client].mainPath;
   }
 
   function setPath(newPath: string) {
-    if (client === 'stable') {
-      setClientSetting('stable', { mainPath: newPath });
-    } else if (client === 'lazer') {
-      setClientSetting('lazer', { songsPath: newPath });
-    } else if (client === 'manual') {
-      setClientSetting('manual', { downloadPath: newPath });
-    }
+    setClientSetting(client, { mainPath: newPath });
   }
 
   return (
     <fieldset>
-      <legend>Settings</legend>
+      <legend>Settings {status.stats.beatmapSets}</legend>
 
       <Template.Column>
         <label>
@@ -89,7 +72,7 @@ export const Settings = () => {
 
         <label>
           <span>Path</span>
-          <Browse path={path} update={setPath} invalid={status.errors.invalidPath} />
+          <Browse path={getPath()} update={setPath} invalid={status.errors.invalidPath} />
         </label>
 
         {client === 'stable' && (
@@ -98,7 +81,7 @@ export const Settings = () => {
               <span>Alt Songs Path</span>
               <YesNo onChange={(mode) => setClientSetting("stable", { "altPathEnabled": mode })} value={stableSettings.altPathEnabled} />
               {stableSettings.altPathEnabled && <Browse path={stableSettings.altPath} update={() => null} />}
-              {stableSettings.altPathEnabled && stableSettings.validPath && <span>({stableSettings.beatmapSetCount} total sets)</span>}
+              {stableSettings.altPathEnabled && !status.errors.invalidPath && <span>({status.stats.beatmapSets} total sets)</span>}
             </label>
           </>
         )}

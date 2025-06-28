@@ -15,7 +15,7 @@ interface PropTypes {
 
 export const DownloadSummary: React.FC<PropTypes> = ({ status }) => {
   const [loading, setLoading] = useState(false)
-  const [expanded, setExpanded] = useState(true)
+  const [expanded, setExpanded] = useState(false)
 
   const estimatedTimeLeft = useMemo(() => {
     if (status.speed === 0) {
@@ -67,38 +67,40 @@ export const DownloadSummary: React.FC<PropTypes> = ({ status }) => {
   }, [status])
 
   return (
-    <div className="content-box hover:border-blue-400 flex flex-col" >
+    <div className="content-box flex flex-col">
       <div className="flex items-center gap-2">
-        <button onClick={remove} disabled={loading}>
-          <DeleteForeverIcon className="warning z-20" />
-        </button>
-        {!finished && (
-          <button className="hover:text-blue-600 cursor-pointer" disabled={loading} onClick={togglePause}>
-            {status.paused ? <PlayArrowIcon /> : <PauseIcon />}
-          </button>
-        )}
-
-        <div className="w-60 text-sm">{bytesToFileSize(status.totalProgress)}/{bytesToFileSize(status.totalSize)}</div>
-        <div className="w-full">
-          {remaining > 0 ? (
-            <LinearProgress
-              variant="determinate"
-              value={progress}
-            />
+        <div className="flex items-center gap-2 text-sm">
+          {finished ? (
+            <div className="w-[24px]" />
           ) : (
-            <>Complete!</>
+            <button className="hover:text-blue-600 cursor-pointer" disabled={loading} onClick={togglePause}>
+              {status.paused ? <PlayArrowIcon /> : <PauseIcon />}
+            </button>
           )}
+
+          <div className="w-40">{bytesToFileSize(status.totalProgress)}/{bytesToFileSize(status.totalSize)}</div>
+        </div>
+        <div className="w-full">
+          <LinearProgress
+            variant="determinate"
+            value={progress}
+          />
         </div>
         <span className="ml-2">
           {progress.toFixed(0)}%
         </span>
-        <ExpandMoreIcon className="cursor-pointer hover:text-black dark:hover:text-white" onClick={() => setExpanded(prev => !prev)}/>
+
+        {/*<ExpandMoreIcon className="cursor-pointer hover:text-black dark:hover:text-white" onClick={() => setExpanded(prev => !prev)}/>*/}
+
+        <button onClick={remove} disabled={loading}>
+          <DeleteForeverIcon className="warning z-20" />
+        </button>
       </div>
 
       {expanded && (
         <div className="flex flex-col gap-0 pt-4">
           <div className="flex items-center">
-            <div className="w-44 label">Sets Downloaded</div>
+            <div className="w-44 label">Stats</div>
             <span>{status.completed}</span>
           </div>
 

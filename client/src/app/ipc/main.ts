@@ -12,7 +12,7 @@ import {
 } from "./downloads";
 import { handleGetSettings, handleSetClientSettings, handleSetSetting } from "./settings";
 import { handleGetBeatmapDetails, handleGetMetrics, handleQuery } from "./query";
-import { handleBrowse, handleGetPlatform } from "./os";
+import { handleBrowse, handleGetPlatform, handleOpenUrl } from "./os";
 import { handleGetApplicationStatus } from "./application";
 
 export const serverUri = "https://v2.nzbasic.com";
@@ -44,3 +44,4 @@ ipcMain.handle("get-beatmap-details", handleGetBeatmapDetails);
 
 ipcMain.handle("browse", handleBrowse);
 ipcMain.handle("get-platform", handleGetPlatform);
+ipcMain.handle("open-url", handleOpenUrl);

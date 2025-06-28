@@ -86,5 +86,12 @@ module.exports = {
         },
       },
     },
+    // {
+    //   name: "@timfish/forge-externals-plugin",
+    //   config: {
+    //     externals: ["realm"],
+    //     includeDeps: true,
+    //   }
+    // }
   ],
 };

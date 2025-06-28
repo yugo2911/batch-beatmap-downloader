@@ -4,23 +4,17 @@ export interface StableClientSettings {
   mainPath: string;
   altPath: string;
   altPathEnabled: boolean;
-  validPath: boolean;
-  beatmapSetCount: number;
   temp: boolean;
   tempPath: string;
   autoTemp: boolean;
 }
 
 export interface LazerClientSettings {
-  songsPath: string;
-  validPath: boolean;
-  beatmapSetCount: number;
+  mainPath: string;
 }
 
 export interface ManualClientSettings {
-  downloadPath: string;
-  validPath: boolean;
-  beatmapSetCount: number;
+  mainPath: string;
 }
 
 export interface ClientPathsSettings {

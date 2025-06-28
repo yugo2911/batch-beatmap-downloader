@@ -3,6 +3,8 @@ import Select from "react-select";
 import { TInputItemDropdown } from "../../../../models/simple";
 import { TInputItemProps } from "./InputItem";
 import WarningIcon from '@mui/icons-material/Warning'
+import { styles } from "@/components/util/Select";
+import { DropdownOption } from "@/models/rules";
 
 export const DropdownInput: React.FC<TInputItemProps<TInputItemDropdown>> = ({ label, value, onChange, defaultValue, options, warning }) => {
   return (
@@ -11,9 +13,10 @@ export const DropdownInput: React.FC<TInputItemProps<TInputItemDropdown>> = ({ l
       <Select
         className="w-40 my-react-select-container"
         classNamePrefix="my-react-select"
+        styles={styles}
         options={options}
         value={value.option}
-        onChange={(e) => onChange(e ? { ...value, option: e } : defaultValue)}
+        onChange={(e: DropdownOption) => onChange(e ? { ...value, option: e } : defaultValue)}
       />
 
       {warning && value.option.value === defaultValue.option.value && (

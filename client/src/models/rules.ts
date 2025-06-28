@@ -126,6 +126,7 @@ export const inputTypeMap: Record<RuleType, InputType> = {
 export interface DropdownOption {
   label: string;
   value: string;
+  type?: RuleType;
 }
 
 export const dropdownMap = new Map<RuleType, DropdownOption[]>([

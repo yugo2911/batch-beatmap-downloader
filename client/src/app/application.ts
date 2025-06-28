@@ -7,7 +7,7 @@ import { ClientType } from "../models/settings";
 import { DownloadsService } from "./downloads";
 import { convertStatus } from "./download/util";
 import { window } from "../main";
-import { ApplicationError, ApplicationStatus, ErrorCode, Feature } from "@/models/application";
+import { ApplicationStatus } from "@/models/application";
 
 export class Application {
   private static _instance: Application;
@@ -27,6 +27,11 @@ export class Application {
 
   private constructor() {
     this._settings = new SettingsService();
+    this._settings.register((change) => {
+      if (change.client) {
+        this.setClientType(change.client);
+      }
+    })
 
     const clientType = this._settings.get("client");
     this._clientFactory = {
@@ -43,6 +48,10 @@ export class Application {
 
   public setClientType(type: ClientType) {
     if (this._clientFactory[type]) {
+      if (this._client) {
+        this._client.destroy();
+      }
+
       this._client = this._clientFactory[type]();
       this._downloads.setClient(this._client);
     } else {
@@ -85,7 +94,7 @@ export class Application {
   public async getStatus(): Promise<ApplicationStatus> {
     const errors = await this._client.getErrors();
 
-    return errors.reduce((acc, error) => {
+    const errorPortion = errors.reduce((acc, error) => {
       if (error.disable) {
         error.disable.forEach(action => {
           acc.disabled[action] = true;
@@ -101,5 +110,14 @@ export class Application {
       }
       return acc;
     }, { messages: {}, errors: {}, disabled: {} } as ApplicationStatus);
+
+    await this._client.loadBeatmaps();
+
+    return {
+      ...errorPortion,
+      stats: {
+        beatmapSets: this._client.beatmapSets.size,
+      }
+    }
   }
 }

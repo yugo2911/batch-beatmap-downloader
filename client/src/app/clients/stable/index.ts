@@ -5,8 +5,15 @@ import path from "path";
 import { readCollections, writeCollections } from "./collection/parse";
 import { cloneDeep } from "lodash";
 import { Application } from "../../application";
+import { SettingsObject } from "@/models/settings";
 
 export class StableClient extends Client {
+  protected getSettingsListener() {
+    return (change: Partial<SettingsObject>) => {
+      console.log('changed')
+    }
+  }
+
   public getRootPath() {
     const settings = this._settings.getClientSettings("stable");
     return settings.mainPath;

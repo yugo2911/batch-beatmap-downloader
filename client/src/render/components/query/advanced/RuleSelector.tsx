@@ -1,6 +1,14 @@
 import React from "react";
 import Select from "react-select";
-import { inputOptions, Rule, defaultValuesMap, defaultOperatorsMap, RuleType } from "../../../../models/rules";
+import {
+  inputOptions,
+  Rule,
+  defaultValuesMap,
+  defaultOperatorsMap,
+  RuleType,
+  DropdownOption
+} from "../../../../models/rules";
+import { styles } from "@/components/util/Select";
 
 interface PropTypes {
   rule: Rule;
@@ -12,9 +20,10 @@ export const RuleSelector = ({ rule, onChange }: PropTypes) => {
     <Select
       className="w-52 my-react-select-container"
       classNamePrefix="my-react-select"
+      styles={styles}
       options={inputOptions}
       defaultValue={inputOptions.find((i) => i.value === rule.field)}
-      onChange={(option) =>
+      onChange={(option: DropdownOption) =>
         onChange({
           field: option?.value ?? "",
           type: option?.type ?? "",

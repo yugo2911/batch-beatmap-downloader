@@ -1,13 +1,28 @@
-import { SettingsService } from "../settings";
+import { SettingsListener, SettingsService } from "../settings";
 import { ApplicationError, ErrorCode, Feature } from "../../models/application";
 
 export abstract class Client {
   protected _beatmapSets: Set<number>;
+  private _settingsListener: SettingsListener | null = null;
 
-  constructor(protected _settings: SettingsService) {}
+  constructor(protected _settings: SettingsService) {
+    this._settingsListener = this.getSettingsListener();
+    console.log(this._settingsListener);
+    this._settings.register(this._settingsListener);
+  }
+
+  public destroy() {
+    if (this._settingsListener) {
+      this._settings.unregister(this._settingsListener);
+      this._settingsListener = null;
+    }
+  }
 
   abstract loadBeatmaps(): Promise<Set<number>>;
   abstract isPathValid(): Promise<boolean>;
+  abstract getRootPath(): string
+  abstract getDownloadPath(): string
+  protected abstract getSettingsListener(): SettingsListener;
 
   public async getErrors(): Promise<ApplicationError[]> {
     const errors: ApplicationError[] = [];
@@ -36,13 +51,5 @@ export abstract class Client {
 
   public supportsCollections() {
     return false;
-  }
-
-  public getRootPath() {
-    return "";
-  }
-
-  public getDownloadPath() {
-    return "";
   }
 }

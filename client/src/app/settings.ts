@@ -2,13 +2,40 @@ import settings from "electron-settings";
 import { ClientType, SettingsObject } from "../models/settings";
 import { v4 as uuid } from "uuid";
 import merge from 'deepmerge';
-import { Application } from "./application";
+import { cloneDeep } from "lodash";
+import { updatedDiff } from 'deep-object-diff';
+
+export type SettingsListener = (change: Partial<SettingsObject>) => void;
 
 export class SettingsService {
   private _settings: SettingsObject;
+  private _listeners: SettingsListener[] = [];
+  private _before: SettingsObject;
 
-  private _hooks: Record<string, (s: SettingsObject) => void> = {
-    "client": (s) => Application.instance.setClientType(s.client),
+  public register(listener: SettingsListener) {
+    this._listeners.push(listener);
+  }
+
+  public unregister(listener: SettingsListener) {
+    this._listeners = this._listeners.filter(l => l !== listener);
+  }
+
+  private notify(change: Partial<SettingsObject>) {
+    this._listeners.forEach(listener => listener(change));
+  }
+
+  private begin() {
+    this._before = cloneDeep({ ...this._settings });
+  }
+
+  private commit() {
+    this.setAllSync(this._settings);
+
+    const diff = updatedDiff(this._before, this._settings);
+
+    if (Object.keys(diff).length > 0) {
+      this.notify(diff);
+    }
   }
 
   public constructor() {
@@ -28,18 +55,12 @@ export class SettingsService {
           tempPath: s.clientPaths?.stable?.tempPath ?? null,
           temp: s.clientPaths?.stable?.temp ?? false,
           autoTemp: s.clientPaths?.stable?.autoTemp ?? false,
-          validPath: false,
-          beatmapSetCount: 0,
         },
         lazer: {
-          songsPath: "",
-          validPath: false,
-          beatmapSetCount: 0,
+          mainPath: s.clientPaths?.lazer?.mainPath ?? null,
         },
         manual: {
-          downloadPath: "",
-          validPath: false,
-          beatmapSetCount: 0,
+          mainPath: s.clientPaths?.manual?.mainPath ?? '',
         },
       },
     };
@@ -61,75 +82,63 @@ export class SettingsService {
     return this._settings;
   }
 
-  private checkHooks(...keys: string[]) {
-    if (keys.length === 0) {
-      keys = Object.keys(this._hooks);
-    }
-
-    keys.forEach(key => {
-      if (this._hooks[key]) {
-        console.log(`Running hook for key: ${key}`);
-        this._hooks[key](this._settings);
-      } else {
-        console.warn(`No hook found for key: ${key}`);
-      }
-    });
-  }
-
   private setSync(key: string, value: unknown) {
     // @ts-expect-error eslint-disable-next-line
     settings.setSync(key, value);
-    this.checkHooks(key);
   }
   private setAllSync(obj: Record<string, unknown>) {
     // @ts-expect-error eslint-disable-next-line
     settings.setSync(obj);
-    this.checkHooks();
   }
 
   public setClientSettings<C extends ClientType>(client: C, clientSettings: Partial<SettingsObject['clientPaths'][C]>) {
-    const newSettings = {
+    this.begin();
+
+    this._settings.clientPaths[client] = {
       ...this._settings.clientPaths[client],
       ...clientSettings,
     };
 
-    this.setSync(`clientPaths.${client}`, newSettings);
-    this._settings.clientPaths[client] = newSettings;
+    this.commit();
   }
 
   public merge(s: Partial<SettingsObject>) {
-    // merge, including nested objects
-    const newSettings = merge(this._settings, s);
-    this._settings = newSettings;
-    this.setAllSync(newSettings);
+    this.begin();
+
+    this._settings = merge(this._settings, s);
+
+    this.commit();
   }
 
   public dangerousUnset(key: string) {
     settings.unsetSync(key);
     // @ts-expect-error eslint-disable-next-line
     delete this._settings[key];
-    this.checkHooks(key);
   }
 
   public unset(key: keyof SettingsObject) {
     settings.unsetSync(key);
     delete this._settings[key];
-    this.checkHooks(key);
   }
 
   public dangerousSet(key: string, value: unknown) {
+    this.begin();
+
     // @ts-expect-error eslint-disable-next-line
     this._settings[key] = value;
-    this.setSync(key, value);
+
+    this.commit();
   }
 
   public set<K extends keyof SettingsObject>(key: K, value: SettingsObject[K]) {
+    this.begin();
+
     this._settings[key] = value;
-    this.setSync(key, value);
+
+    this.commit();
   }
 
   public get<K extends keyof SettingsObject>(key: K): SettingsObject[K] {
     return this._settings[key];
   }
 }
-

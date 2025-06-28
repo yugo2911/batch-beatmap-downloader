@@ -8,6 +8,9 @@ export enum ErrorCode {
 }
 
 export type ApplicationStatus = {
+  stats: {
+    beatmapSets: number;
+  };
   disabled: Partial<Record<Feature, boolean>>;
   errors: Partial<Record<ErrorCode, boolean>>;
   messages: Partial<Record<ErrorCode, string>>;

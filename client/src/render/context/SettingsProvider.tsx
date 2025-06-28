@@ -13,6 +13,9 @@ export interface Settings {
 }
 
 const defaultApplicationStatus: ApplicationStatus = {
+  stats: {
+    beatmapSets: 0,
+  },
   errors: {},
   disabled: {},
   messages: {},
