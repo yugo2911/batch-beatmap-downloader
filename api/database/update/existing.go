@@ -60,7 +60,7 @@ func checkUpdate(id int, hash string) {
 	}
 
 	if hash != beatmap.Checksum {
-		data, err := api.DownloadBeatmap(fmt.Sprintf("%d", beatmap.Beatmapset.ID))
+		data, err := api.DownloadBeatmapset(beatmap.Beatmapset.ID)
 		if err != nil {
 			log.Println(err)
 			return
@@ -73,7 +73,12 @@ func checkUpdate(id int, hash string) {
 		}
 
 		size := len(body)
-		oszData := osu.ParseOszInMemory(body)
+		oszData, err := osu.ParseOszInMemory(body)
+		if err != nil {
+			log.Println("Error parsing OSZ data:", err)
+			return
+		}
+
 		updateFullSet(oszData, size)
 	} else {
 		updateApiData(beatmap)

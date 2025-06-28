@@ -10,6 +10,7 @@ import (
 
 	"github.com/cheggaaa/pb/v3"
 	"github.com/joho/godotenv"
+	"github.com/nzbasic/batch-beatmap-downloader/api/config"
 	"github.com/nzbasic/batch-beatmap-downloader/api/database"
 	"github.com/nzbasic/batch-beatmap-downloader/api/osu"
 	"github.com/thehowl/go-osuapi"
@@ -44,7 +45,7 @@ func main() {
 	}
 
 	godotenv.Load()
-	c := osuapi.NewClient(os.Getenv("OSU_KEY"))
+	c := osuapi.NewClient(config.Config.Osu.Key)
 
 	bar := pb.StartNew(len(paths))
 
