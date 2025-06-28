@@ -2,9 +2,9 @@ package database
 
 import (
 	"database/sql"
-	"os"
 
 	"github.com/joho/godotenv"
+	"github.com/nzbasic/batch-beatmap-downloader/api/config"
 )
 
 var metaDb *sql.DB
@@ -12,8 +12,8 @@ var fullDb *sql.DB
 
 func open() {
 	godotenv.Load()
-	metaDb, _ = sql.Open("sqlite3", os.Getenv("META_DB_LOCATION"))
-	fullDb, _ = sql.Open("sqlite3", os.Getenv("FULL_DB_LOCATION"))
+	metaDb, _ = sql.Open("sqlite3", config.Config.DB.Meta)
+	fullDb, _ = sql.Open("sqlite3", config.Config.DB.Full)
 
 	println("Total Maps:", GetBeatmapCount())
 	// RefreshFarm()
@@ -42,5 +42,5 @@ func Begin() (*sql.Tx, error) {
 }
 
 func OpenFullDb() {
-	fullDb, _ = sql.Open("sqlite3", os.Getenv("FULL_DB_LOCATION"))
+	fullDb, _ = sql.Open("sqlite3", config.Config.DB.Full)
 }

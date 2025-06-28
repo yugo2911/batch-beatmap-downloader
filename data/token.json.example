@@ -1,0 +1,9 @@
+{
+  "token": {
+    "token_type": "Bearer",
+    "expires_in": 86400,
+    "access_token": "sample_access_token_here",
+    "refresh_token": "sample_refresh_token_here"
+  },
+  "token_acquired_at": "2025-06-24T10:00:00Z"
+}

@@ -30,12 +30,12 @@ func Exists(setId int) bool {
 }
 
 func AddBeatmap(beatmap osu.BeatmapData) {
-	_, err := fullDb.Exec("INSERT INTO beatmaps VALUES(?,?,?,?)",
-		beatmap.Id,
-		beatmap.SetId,
-		beatmap.TimingPoints,
-		beatmap.HitObjects,
-	)
+	// _, err := fullDb.Exec("INSERT INTO beatmaps VALUES(?,?,?,?)",
+	// 	beatmap.Id,
+	// 	beatmap.SetId,
+	// 	beatmap.TimingPoints,
+	// 	beatmap.HitObjects,
+	// )
 
 	isStream := osu.IsStream(beatmap.Mode, beatmap.Bpm, beatmap.HitObjects, beatmap.TimingPoints)
 	isRankedMapper := isRankedMapper(beatmap.Creator)
@@ -43,7 +43,7 @@ func AddBeatmap(beatmap osu.BeatmapData) {
 	archetype := ""
 
 	cmd := "INSERT INTO beatmaps VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
-	_, err = metaDb.Exec(cmd,
+	_, err := metaDb.Exec(cmd,
 		beatmap.Id,
 		beatmap.SetId,
 		beatmap.Title,

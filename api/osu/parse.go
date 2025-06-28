@@ -71,8 +71,13 @@ func ParseSetId(path string) int {
 	return setId
 }
 
-func ParseOszInMemory(data []byte) []OszBeatmapData {
-	archive, _ := zip.NewReader(bytes.NewReader(data), int64(len(data)))
+func ParseOszInMemory(data []byte) ([]OszBeatmapData, error) {
+	archive, err := zip.NewReader(bytes.NewReader(data), int64(len(data)))
+	if err != nil {
+		log.Println("Error reading OSZ data:", err)
+		return nil, err
+	}
+
 	output := []OszBeatmapData{}
 
 	for _, f := range archive.File {
@@ -82,12 +87,17 @@ func ParseOszInMemory(data []byte) []OszBeatmapData {
 		}
 	}
 
-	return output
+	return output, nil
 }
 
-func ParseOszInMemoryWithApiData(apiData []osuapi.Beatmap, data []byte) []BeatmapData {
+func ParseOszInMemoryWithApiData(apiData []osuapi.Beatmap, data []byte) ([]BeatmapData, error) {
 	size := len(data)
-	oszData := ParseOszInMemory(data)
+	oszData, err := ParseOszInMemory(data)
+	if err != nil {
+		log.Println("Error parsing OSZ data:", err)
+		return nil, err
+	}
+
 	output := []BeatmapData{}
 
 	for _, apiBeatmap := range apiData {
@@ -98,7 +108,7 @@ func ParseOszInMemoryWithApiData(apiData []osuapi.Beatmap, data []byte) []Beatma
 		}
 	}
 
-	return output
+	return output, nil
 }
 
 func ParseOszFromFileWithApiData(apiData []osuapi.Beatmap, path string, setId int) []BeatmapData {

@@ -90,3 +90,7 @@ out/
 
 .aider*
 .idea*
+
+# Token files - contains sensitive authentication data
+data/token.json
+*.token.json

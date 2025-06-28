@@ -3,19 +3,19 @@ package store
 import (
 	"fmt"
 	"log"
-	"os"
 	"time"
 
 	"github.com/asdine/storm/v3"
 	"github.com/go-co-op/gocron"
 	"github.com/joho/godotenv"
+	"github.com/nzbasic/batch-beatmap-downloader/api/config"
 )
 
 var db *storm.DB
 
 func init() {
 	godotenv.Load()
-	open, err := storm.Open(os.Getenv("METRICS_LOCATION"))
+	open, err := storm.Open(config.Config.DB.Metrics)
 	if err != nil {
 		panic(err)
 	}
