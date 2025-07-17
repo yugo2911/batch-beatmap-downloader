@@ -15,7 +15,7 @@ import {
   handleResumeDownloads,
   handleStartDownload
 } from "./downloads";
-import { handleGetBeatmapDetails, handleGetMetrics, handleQuery } from "./query";
+import { handleGetBeatmapDetails, handleGetMetrics, handleQuery, handleQueryManualInput } from "./query";
 import {
   handleGetSettings,
   handleSetSetting,
@@ -44,6 +44,7 @@ export const handleGenericError = (e: unknown) => {
 
 export const electronBridge = {
   query: handleQuery,
+  queryManualInput: handleQueryManualInput,
   getMetrics: handleGetMetrics,
   getBeatmapDetails: handleGetBeatmapDetails,
 

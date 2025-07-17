@@ -11,7 +11,7 @@ import {
   handleStartDownload
 } from "./downloads";
 import { handleGetSettings, handleSetClientSettings, handleSetSetting } from "./settings";
-import { handleGetBeatmapDetails, handleGetMetrics, handleQuery } from "./query";
+import { handleGetBeatmapDetails, handleGetMetrics, handleQuery, handleQueryManualInput } from "./query";
 import { handleBrowse, handleGetPlatform, handleOpenUrl, handleOpen } from "./os";
 import { handleGetApplicationStatus } from "./application";
 
@@ -39,6 +39,7 @@ ipcMain.handle("set-client-settings", handleSetClientSettings);
 ipcMain.handle("get-application-status", handleGetApplicationStatus)
 
 ipcMain.handle("query", handleQuery);
+ipcMain.handle("query-manual-input", handleQueryManualInput);
 ipcMain.handle("get-metrics", handleGetMetrics)
 ipcMain.handle("get-beatmap-details", handleGetBeatmapDetails);
 

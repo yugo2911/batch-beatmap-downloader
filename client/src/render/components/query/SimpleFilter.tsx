@@ -204,7 +204,7 @@ export const SimpleFilter: React.FC<PropTypes> = ({ tree, updateTree }) => {
       </div>
 
       {aboveSection.items.map(item => (
-        <InputItem {...item} onChange={(value) => handleChange(value, item)} value={getValue(tree, item)} />
+        <InputItem {...item} key={item.key} onChange={(value) => handleChange(value, item)} value={getValue(tree, item)} />
       ))}
 
       <div className="flex items-center gap-2 w-full justify-between my-2 border-t border-black pt-4">
@@ -223,7 +223,7 @@ export const SimpleFilter: React.FC<PropTypes> = ({ tree, updateTree }) => {
       </div>
 
       {section.items.map(item => (
-        <InputItem {...item} onChange={(value) => handleChange(value, item)} value={getValue(tree, item)} />
+        <InputItem {...item} key={item.key} onChange={(value) => handleChange(value, item)} value={getValue(tree, item)} />
       ))}
     </div>
   )

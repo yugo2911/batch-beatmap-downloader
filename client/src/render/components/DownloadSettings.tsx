@@ -11,9 +11,10 @@ import { Tooltip } from "./util/Tooltip";
 
 interface PropTypes {
   result: DownloadDetails;
+  mode: 'simple' | 'advanced' | 'manual';
 }
 
-export const DownloadSettings = ({ result }: PropTypes) => {
+export const DownloadSettings = ({ result, mode }: PropTypes) => {
   const [force, setForce] = useState(false);
   const [collection, setCollection] = useState(false);
   const [collectionName, setCollectionName] = useState("");
@@ -42,7 +43,9 @@ export const DownloadSettings = ({ result }: PropTypes) => {
           <span>
             {force ? result.setsForce : result.sets} Sets to download
           </span>
-          <span>Total Size: {fileSize}</span>
+          <span>Total Size: {fileSize} {mode === 'manual' && (
+            <span className="text-sm text-gray-500">(Estimated, size is unknown in manual mode)</span>
+          )}</span>
         </div>
       </div>
       <div className="flex flex-col gap-1">

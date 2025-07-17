@@ -6,6 +6,10 @@ interface NumericInputProps extends Omit<React.ComponentProps<"input">, "value" 
 }
 
 export const NumericInput = ({ value, onChange, ...props }: NumericInputProps) => {
+  if (isNaN(value)) {
+    value = 0; // Default to 0 if the value is NaN
+  }
+
   return (
     <input
       {...props}

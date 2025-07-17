@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { cloneDeep } from "lodash";
 import { toast } from "react-toastify";
-import { createPortal } from "react-dom";
+import ReactDOM, { createPortal } from "react-dom";
 import { CircularProgress } from "@mui/material";
+import { createRoot } from "react-dom/client";
 
 import { sampleTree } from "@/models/filter";
 import { RuleType } from "@/models/rules";
@@ -14,11 +15,14 @@ import { DownloadSettings } from "@/components/DownloadSettings";
 import { InvalidPath } from "@/components/InvalidPath";
 import { SimpleFilter } from "@/components/query/SimpleFilter";
 import { AdvancedFilter } from "@/components/query/AdvancedFilter";
+import { ManualInput } from "@/components/query/ManualInput";
 import Button from "@/components/util/Button";
 import { treeIsCompatibleWithSimpleMode } from "@/models/simple";
 import { QuerySettings } from "@/components/query/QuerySettings";
 import { useSettings } from "@/context/SettingsProvider";
 import { ResultTable } from "@/components/query/ResultTable";
+
+const modes = ['simple', 'advanced', 'manual'] as const;
 
 export const Query = () => {
   const { status } = useSettings()
@@ -27,7 +31,8 @@ export const Query = () => {
   const [loading, setLoading] = useState(false);
   const [limit, setLimit] = useState<number>();
   const [order, setOrder] = useState<QueryOrder>();
-  const [simpleMode, setSimpleMode] = useStickyState(true, "simple")
+  const [mode, setMode] = useStickyState<'simple' | 'advanced' | 'manual'>('simple', 'query-mode');
+  const [migrateModal, setMigrateModal] = useState(false);
 
   const exportData = async () => {
     setResult(null);
@@ -86,72 +91,101 @@ export const Query = () => {
     setTree({ ...tree, group });
   };
 
-  const handleChangeMode = (simple: boolean) => {
-    if (!simple) return setSimpleMode(simple)
-    if (tree.group && treeIsCompatibleWithSimpleMode(tree.group)) return setSimpleMode(simple)
+  const handleChangeMode = (nextMode: 'simple' | 'advanced' | 'manual') => {
+    if (nextMode !== 'manual') {
+      // if swapping from manual, clear results
+      setResult(null);
+    }
+
+    // prevent switching to simple mode if the tree is not compatible
+    const simple = nextMode === 'simple';
+    if (!simple) return setMode(nextMode);
+    if (tree.group && treeIsCompatibleWithSimpleMode(tree.group)) return setMode(nextMode);
 
     const node = document.getElementById('modal')
     if (!node) return
+  
     node.classList.remove('hidden')
-    createPortal(
-      <div className="bg-white dark:bg-monokai-light rounded-xl shadow p-8">
-        <p className="font-bold text-xl mb-4">Compatibility Error</p>
-        <p>Your current query is not compatible with the Simple Mode due to either:</p>
-        <ul className="list-disc list-inside">
-          <li>Nested rules</li>
-          <li>"Not" rules</li>
-          <li>"Or" rules</li>
-        </ul>
-        <p className="my-4">You can have your filter automatically converted, or stay in advanced mode.</p>
-        <div className="space-x-2">
-          <Button onClick={() => {
-            setSimpleMode(true);
-            node.classList.add('hidden')
-          }}>
-            Convert
-          </Button>
-          <Button onClick={() => node.classList.add('hidden')}>Cancel</Button>
-        </div>
-      </div>,
-      node
-    );
+    setMigrateModal(true);
   };
 
   if (!tree.group) return null
   return (
     <div className="flex flex-col w-full gap-4">
+
+      {migrateModal && createPortal(
+        <div className="bg-white dark:bg-monokai-light rounded-xl shadow p-8">
+          <p className="font-bold text-xl mb-4">Compatibility Error</p>
+          <p>Your current query is not compatible with the Simple Mode due to either:</p>
+          <ul className="list-disc list-inside">
+            <li>Nested rules</li>
+            <li>"Not" rules</li>
+            <li>"Or" rules</li>
+          </ul>
+          <p className="my-4">You can have your filter automatically converted, or stay in advanced mode.</p>
+          <div className="space-x-2">
+            <Button onClick={() => {
+              setMode('simple');
+              document.getElementById('modal')!.classList.add('hidden')
+            }}>
+              Convert
+            </Button>
+            <Button onClick={() => document.getElementById('modal')!.classList.add('hidden')}>Cancel</Button>
+          </div>
+        </div>,
+        document.getElementById('modal')!
+      )}
+
       {status.errors.invalidPath ? <InvalidPath /> : (
         <>
           <div className="flex items-center gap-4">
-            <button className={`${simpleMode ? 'box-selector-on' : 'box-selector-off'}`} onClick={() => handleChangeMode(true)}>Simple Mode</button>
-            <button className={`${!simpleMode ? 'box-selector-on' : 'box-selector-off'}`} onClick={() => handleChangeMode(false)}>Advanced Mode</button>
+            {modes.map((m) => (
+              <button 
+                key={m} 
+                className={`${mode === m ? 'box-selector-on' : 'box-selector-off'}`} 
+                onClick={() => handleChangeMode(m)}
+              >
+                {m.charAt(0).toUpperCase() + m.slice(1)} Mode
+              </button>
+            ))}
           </div>
-          {simpleMode ?
-            <SimpleFilter tree={tree} updateTree={updateTree} /> :
+
+          {mode === 'manual' && (
+            <ManualInput onResult={setResult} />
+          )}
+          
+          {mode === 'simple' && (
+            <SimpleFilter tree={tree} updateTree={updateTree} />
+          )}
+
+          {mode === 'advanced' && (
             <AdvancedFilter tree={tree} updateTree={updateTree} />
-          }
-          <div className="flex flex-col gap-6 content-box">
-            <QuerySettings
-              limit={limit}
-              updateLimit={(limit) => setLimit(limit)}
-              order={order}
-              updateOrder={(order) => setOrder(order)}
-            />
-            <div className="flex gap-2 items-center">
-              {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
-              <Button className="input-height px-4" color="blue" onClick={exportData} disabled={loading}>
-                Search
-              </Button>
-              {loading && <CircularProgress size={25} />}
-              {result && result.beatmaps === 0 && <>No results!</>}
+          )}
+
+          {mode === 'manual' || mode === 'advanced' && (
+            <div className="flex flex-col gap-6 content-box">
+              <div className="flex gap-2 items-center">
+                <QuerySettings
+                  limit={limit}
+                  updateLimit={(limit) => setLimit(limit)}
+                  order={order}
+                  updateOrder={(order) => setOrder(order)}
+                />
+                {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
+                <Button className="input-height px-4" color="blue" onClick={exportData} disabled={loading}>
+                  Search
+                </Button>
+                {loading && <CircularProgress size={25} />}
+                {result && result.beatmaps === 0 && <>No results!</>}
+              </div>
             </div>
-          </div>
+          )}
         </>
       )}
       {result && result.beatmaps > 0 && (
         <div className="flex flex-col gap-4">
           <div className="content-box">
-            <DownloadSettings result={result} />
+            <DownloadSettings mode={mode} result={result} />
           </div>
           <div className="content-box no-pad mt-0 flex flex-col gap-4">
             <span className="font-bold text-lg dark:text-white p-6 pb-2">Results</span>

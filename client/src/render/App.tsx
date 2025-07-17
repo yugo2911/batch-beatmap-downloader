@@ -25,7 +25,7 @@ const App = () => {
   return (
     <HashRouter>
       <div className="flex w-screen">
-        <div id="modal" className="absolute top-0 left-0 w-screen h-screen bg-gray-300/30 z-50 flex items-center justify-center hidden" />
+        <div id="modal" className="absolute top-0 left-0 w-screen h-screen bg-gray-300/30 z-50 flex items-center justify-center hidden"></div>
         <Menu version={version} />
         <div className="main p-4 overflow-auto overflow-x-hidden h-screen">
           <Routes>

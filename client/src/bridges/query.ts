@@ -32,3 +32,15 @@ export const handleGetBeatmapDetails = async (page: number, pageSize: number) =>
 }
 
 export const handleGetMetrics = () => ipcRenderer.invoke("get-metrics") as Promise<[boolean, MetricsV2]>
+
+export const handleQueryManualInput = async (setIds: number[]) => {
+  try {
+    const res = (await ipcRenderer.invoke(
+      "query-manual-input",
+      setIds
+    )) as DownloadDetails;
+    return res;
+  } catch (e) {
+    return handleGenericError(e);
+  }
+};
