@@ -4,6 +4,7 @@ import { useDownload } from "../context/DownloadProvider";
 import { DownloadSummary } from "../components/DownloadSummary";
 import { LinearProgress } from "@mui/material";
 import { useStatus } from "../context/StatusProvider";
+import { LazerWarning } from "../components/LazerWarning";
 
 export const Downloads = () => {
   const { downloads } = useDownload()
@@ -72,6 +73,9 @@ export const Downloads = () => {
           />
         </div>
       </div>
+
+      <LazerWarning />
+
       {downloads.map(download => (
         <DownloadSummary key={download.id} status={download} />
       ))}

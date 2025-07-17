@@ -6,6 +6,8 @@ import { toast } from "react-toastify";
 import Button from "./util/Button";
 import { DownloadDetails } from "../../models/api";
 import { YesNo } from "@/components/util/YesNo";
+import { Template } from "./util/Template";
+import { Tooltip } from "./util/Tooltip";
 
 interface PropTypes {
   result: DownloadDetails;
@@ -46,7 +48,11 @@ export const DownloadSettings = ({ result }: PropTypes) => {
       <div className="flex flex-col gap-1">
         <div className="flex flex-col gap-2">
           <label>
-            <span>Force Download All Maps</span>
+            <Template.InlineRow className="w-52">
+              <span className="whitespace-nowrap">Force download</span>
+              <Tooltip title="Downloads maps that you already have" />
+            </Template.InlineRow>
+
             <YesNo value={force} onChange={(e) => setForce(e)} />
           </label>
           <label>

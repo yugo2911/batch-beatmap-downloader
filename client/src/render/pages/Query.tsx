@@ -120,7 +120,6 @@ export const Query = () => {
   if (!tree.group) return null
   return (
     <div className="flex flex-col w-full gap-4">
-      <Settings />
       {status.errors.invalidPath ? <InvalidPath /> : (
         <>
           <div className="flex items-center gap-4">

@@ -12,7 +12,7 @@ export const BasicStatus = () => {
         <span className="font-bold text-lg">Basic Status</span>
         <div className="flex flex-col">
           {loading ? <CircularProgress /> : (
-            <span className={`${online ? "text-green-500" : "text-red-500"}`}>
+            <span className={`font-semibold ${online ? "text-green-500" : "text-red-500"}`}>
               Server connection: {online ? "Online" : "Offline"}
             </span>
           )}

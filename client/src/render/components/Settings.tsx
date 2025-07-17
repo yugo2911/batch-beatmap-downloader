@@ -9,6 +9,7 @@ import { useDownload } from "@/render/context/DownloadProvider";
 import Button from "@/components/util/Button";
 import { Template } from "@/components/util/Template";
 import { YesNo } from "@/components/util/YesNo";
+import { LazerWarning } from "./LazerWarning";
 
 const parallelTooltip = `Advanced: The number of parallel requests made per download.
 Increasing this may increase your total download speed.
@@ -48,69 +49,79 @@ export const Settings = () => {
   }
 
   return (
-    <fieldset>
-      <legend>Settings {status.stats.beatmapSets}</legend>
+    <>
+      <fieldset>
+        <legend>Settings</legend>
 
-      <Template.Column>
-        <label>
-          <span>Client</span>
+        <Template.Column>
+          <label>
+            <span>Client</span>
 
-          <Template.InlineRow>
-            {clients.map(client => (
-              <Button
-                key={client.value}
-                className={classNames('input-height', {
-                  '!bg-monokai-light2': client.value !== settings.client,
-                })}
-                onClick={() => setSetting("client", client.value)}
-              >
-                {client.name}
-              </Button>
-            ))}
-          </Template.InlineRow>
-        </label>
+            <Template.InlineRow>
+              {clients.map(client => (
+                <Button
+                  key={client.value}
+                  className={classNames('input-height', {
+                    '!bg-monokai-light2': client.value !== settings.client,
+                  })}
+                  onClick={() => setSetting("client", client.value)}
+                >
+                  {client.name}
+                </Button>
+              ))}
+            </Template.InlineRow>
+          </label>
 
-        <label>
-          <span>Path</span>
-          <Browse path={getPath()} update={setPath} invalid={status.errors.invalidPath} />
-        </label>
+          <label>
+            <span>{client !== 'manual' && 'Client '}Path</span>
+            <Browse path={getPath()} update={setPath} invalid={status.errors.invalidPath} />
+          </label>
 
-        {client === 'stable' && (
-          <>
-            <label>
-              <span>Alt Songs Path</span>
-              <YesNo onChange={(mode) => setClientSetting("stable", { "altPathEnabled": mode })} value={stableSettings.altPathEnabled} />
-              {stableSettings.altPathEnabled && <Browse path={stableSettings.altPath} update={() => null} />}
-              {stableSettings.altPathEnabled && !status.errors.invalidPath && <span>({status.stats.beatmapSets} total sets)</span>}
-            </label>
-          </>
-        )}
+          {client === 'stable' && (
+            <>
+              <label>
+                <span>Alt Songs Path</span>
+                <YesNo onChange={(mode) => setClientSetting("stable", { "altPathEnabled": mode })} value={stableSettings.altPathEnabled} />
+                {stableSettings.altPathEnabled && <Browse path={stableSettings.altPath} update={(path) => setClientSetting("stable", { "altPath": path })} />}
+                {stableSettings.altPathEnabled && !status.errors.invalidPath && <span>({status.stats.beatmapSets} total sets)</span>}
+              </label>
+            </>
+          )}
 
-        {client === 'lazer' && (
-          <>
-          </>
-        )}
+          {client === 'lazer' && (
+            <>
+              {!status.errors.invalidPath && (
+                <label>
+                  <span>Download Path</span>
+                  <Browse open path={lazerSettings.downloadPath} update={setPath} invalid={status.errors.invalidPath} />
+                </label>
+              )}
+            </>
+          )}
 
-        {client === 'manual' && (
-          <>
-          </>
-        )}
+          <label>
+            <Template.InlineRow className="w-52">
+              <span className="whitespace-nowrap">Parallel Downloads</span>
+              <Tooltip title={parallelTooltip} />
+            </Template.InlineRow>
+            <div>
+              <NumericInput
+                value={maxConcurrentDownloads}
+                onChange={(value) => setSetting("maxConcurrentDownloads", value)}
+                min={1}
+                max={25}
+              />
+            </div>
+          </label>
 
-        <label>
-          <Template.InlineRow className="w-52">
-            <span className="whitespace-nowrap">Parallel Downloads</span>
-            <Tooltip title={parallelTooltip} />
-          </Template.InlineRow>
-          <div>
-            <NumericInput
-              value={maxConcurrentDownloads}
-              onChange={(value) => setSetting("maxConcurrentDownloads", value)}
-              min={1}
-              max={25}
-            />
-          </div>
-        </label>
-      </Template.Column>
-    </fieldset>
+          <label>
+            <span>Theme</span>
+            <YesNo yesLabel="Dark" noLabel="Light" value={darkMode} onChange={(mode) => setSetting("darkMode", mode)} />
+          </label>
+        </Template.Column>
+      </fieldset>
+
+      <LazerWarning />
+    </>
   );
 };

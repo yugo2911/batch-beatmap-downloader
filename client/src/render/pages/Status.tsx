@@ -20,7 +20,7 @@ export const Status = () => {
     collectMetrics();
     const interval = setInterval(() => collectMetrics(), 5000);
     return () => clearInterval(interval);
-  }, [collectMetrics])
+  }, []) // Remove collectMetrics dependency to prevent recreating intervals
 
   const downloadsScale = new ColorScales(0, 50, ["#00ff00", "#ff0000"]);
   const bandwidthScale = new ColorScales(0, 5000, ["#00ff00", "#ff0000"]);

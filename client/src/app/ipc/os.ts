@@ -8,6 +8,10 @@ export const handleBrowse = async () => {
   });
 }
 
+export const handleOpen = async (event: E, path: string) => {
+  await shell.openPath(path);
+}
+
 export const handleGetPlatform = () => os.platform();
 
 export const handleOpenUrl = async (event: E, url: string) => {

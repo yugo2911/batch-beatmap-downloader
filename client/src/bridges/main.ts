@@ -30,6 +30,7 @@ import {
   handleOpenUrl,
   handleQuit,
   handleGetVersion,
+  handleOpen,
 } from "./system";
 import { handleGetApplicationStatus } from "@/bridges/application";
 
@@ -47,6 +48,7 @@ export const electronBridge = {
   getBeatmapDetails: handleGetBeatmapDetails,
 
   openUrl: handleOpenUrl,
+  open: handleOpen,
   browse: handleBrowse,
   quit: handleQuit,
   getPlatform: handleGetPlatform,

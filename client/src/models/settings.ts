@@ -11,6 +11,7 @@ export interface StableClientSettings {
 
 export interface LazerClientSettings {
   mainPath: string;
+  downloadPath: string;
 }
 
 export interface ManualClientSettings {

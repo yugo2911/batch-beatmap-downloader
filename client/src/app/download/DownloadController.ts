@@ -26,7 +26,7 @@ export class DownloadController {
   private concurrentDownloads: number = 3;
   private id: string;
   private toDownload: number[] = [];
-  private interval: NodeJS.Timeout;
+  private interval: NodeJS.Timeout | null = null;
   private ipc: DownloadIPC;
 
   public constructor(id: string, ids: number[], size: number, force: boolean, hashes: string[]) {
@@ -155,6 +155,13 @@ export class DownloadController {
     this.status.paused = true
     this.updateDownload("pause")
     if (this.ipc) this.ipc.close();
+    
+    // Clean up any existing interval to prevent memory leaks
+    if (this.interval) {
+      clearInterval(this.interval);
+      this.interval = null;
+    }
+    
     Application.instance.emitDownloadStatus();
   }
 
@@ -174,7 +181,10 @@ export class DownloadController {
           if (res.status >= 200 && res.status <= 299) {
             window?.webContents.send("server-down", false)
             void this.resume()
-            clearInterval(this.interval)
+            if (this.interval) {
+              clearInterval(this.interval)
+              this.interval = null;
+            }
           }
         })
       }, 1000)

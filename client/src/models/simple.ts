@@ -359,7 +359,7 @@ export const sections: Section[] = [
       {
         type: InputType.SLIDER,
         key: "Cs",
-        label: "CS (+ mania keys)",
+        label: "CS (& mania Keys)",
         min: 0,
         max: 10,
         step: 0.1,

@@ -8,10 +8,11 @@ interface PropTypes {
   path: string;
   update: (path: string) => void;
   invalid?: boolean;
+  open?: boolean;
 }
 
-export const Browse = ({ path, update, invalid }: PropTypes) => {
-  const browse = async () => {
+export const Browse = ({ path, update, invalid, open }: PropTypes) => {
+  const handleBrowse = async () => {
     const res = await window.electron.browse();
     if (!res.canceled) {
       const path = res.filePaths[0]
@@ -19,6 +20,10 @@ export const Browse = ({ path, update, invalid }: PropTypes) => {
       update(path);
     }
   };
+
+  const handleOpen = async () => {
+    await window.electron.open(path);
+  }
 
   return (
     <Template.InlineRow className="w-full">
@@ -29,7 +34,7 @@ export const Browse = ({ path, update, invalid }: PropTypes) => {
         value={path}
         disabled={true}
       />
-      <Button color="blue" onClick={() => browse()}>Browse</Button>
+      <Button className="min-w-20" color="blue" onClick={() => open ? handleOpen() : handleBrowse()}>{open ? 'Open' : 'Browse'}</Button>
     </Template.InlineRow>
   )
 }

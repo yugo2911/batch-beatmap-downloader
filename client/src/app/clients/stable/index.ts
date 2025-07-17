@@ -149,7 +149,11 @@ export class StableClient extends Client {
     }
   }
 
-  public async addCollection(hashes: string[], name: string) {
+  public supportsCollections(): boolean {
+    return true;
+  }
+
+  public async createCollection(name: string, hashes: string[]) {
     const rootPath = this.getRootPath();
     const collectionPath = path.join(rootPath, "collection.db");
 

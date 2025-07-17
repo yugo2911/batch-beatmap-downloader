@@ -50,4 +50,12 @@ export class ManualClient extends Client {
 
     return true;
   }
+
+  public createCollection(name: string, beatmapIds: string[]): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
+
+  public supportsCollections(): boolean {
+    return false;
+  }
 }

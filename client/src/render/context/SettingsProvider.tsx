@@ -47,12 +47,17 @@ const SettingsProvider: React.FC<PropsWithChildren<object>> = ({ children }) => 
     setStatus(res);
   }
 
-  console.log(settings);
-  console.log(status);
-
   useEffect(() => {
     if (!settings) return;
     document.documentElement.classList.toggle('dark', settings.darkMode ?? true);
+
+    const interval = setInterval(() => {
+      void updateStatus();
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    }
   }, [settings])
 
   useEffect(() => {

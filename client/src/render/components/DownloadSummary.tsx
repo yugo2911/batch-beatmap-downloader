@@ -6,6 +6,7 @@ import { bytesToFileSize } from "../util/fileSize";
 import { LinearProgress } from "@mui/material";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import CheckCircle from "@mui/icons-material/CheckCircle";
 import PauseIcon from '@mui/icons-material/Pause';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 
@@ -71,7 +72,9 @@ export const DownloadSummary: React.FC<PropTypes> = ({ status }) => {
       <div className="flex items-center gap-2">
         <div className="flex items-center gap-2 text-sm">
           {finished ? (
-            <div className="w-[24px]" />
+            <div className="w-[24px]">
+              <CheckCircle className="text-green-500" />
+            </div>
           ) : (
             <button className="hover:text-blue-600 cursor-pointer" disabled={loading} onClick={togglePause}>
               {status.paused ? <PlayArrowIcon /> : <PauseIcon />}

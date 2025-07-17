@@ -10,6 +10,7 @@ export enum ErrorCode {
 export type ApplicationStatus = {
   stats: {
     beatmapSets: number;
+    lazerWarningCount?: number; // Only applicable for Lazer client
   };
   disabled: Partial<Record<Feature, boolean>>;
   errors: Partial<Record<ErrorCode, boolean>>;

@@ -40,9 +40,16 @@ export const handleDeleteDownload = (downloadId: string) => {
 };
 
 export const handleListenForDownloads = (callback: (downloads: ReportedDownloadStatus[]) => void) => {
-  ipcRenderer.on("downloads-status", (event, downloads: ReportedDownloadStatus[]) => {
+  const listener = (event: any, downloads: ReportedDownloadStatus[]) => {
     callback(downloads)
-  })
+  };
+  
+  ipcRenderer.on("downloads-status", listener);
+  
+  // Return cleanup function
+  return () => {
+    ipcRenderer.removeListener("downloads-status", listener);
+  };
 };
 
 export const handleMoveAllDownloads = () => {

@@ -60,7 +60,7 @@ export const QuerySettings = ({ limit, updateLimit, order, updateOrder }: PropTy
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center h-10">
-        <label className="w-32 label">Query Limit</label>
+        <label className="w-32 label">Limit Results</label>
         <YesNo value={limit !== undefined} onChange={enable} />
       </div>
 

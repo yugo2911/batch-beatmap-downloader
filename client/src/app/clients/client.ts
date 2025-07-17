@@ -7,7 +7,6 @@ export abstract class Client {
 
   constructor(protected _settings: SettingsService) {
     this._settingsListener = this.getSettingsListener();
-    console.log(this._settingsListener);
     this._settings.register(this._settingsListener);
   }
 
@@ -45,11 +44,6 @@ export abstract class Client {
     return this._beatmapSets;
   }
 
-  public createCollection(name: string, beatmapIds: string[]): Promise<void> {
-    return new Promise(() => {});
-  }
-
-  public supportsCollections() {
-    return false;
-  }
+  abstract createCollection(name: string, beatmapIds: string[]): Promise<void>
+  abstract supportsCollections(): boolean
 }

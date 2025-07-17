@@ -109,6 +109,22 @@ func RecursiveQueryBuilder(node Node, values *[]string) (string, error) {
 			return "(approved = 'WIP' or approved = 'graveyard' or approved = 'pending')", nil
 		}
 
+		if node.Rule.Field == "Mode" && node.Rule.Value == "osu!" {
+			return "(mode = 'osu!' or mode = 'osu')", nil
+		}
+
+		if node.Rule.Field == "Mode" && node.Rule.Value == "Catch the Beat" {
+			return "(mode = 'Catch the Beat' or mode = 'fruits')", nil
+		}
+
+		if node.Rule.Field == "Mode" && node.Rule.Value == "osu!mania" {
+			return "(mode = 'osu!mania' or mode = 'mania')", nil
+		}
+
+		if node.Rule.Field == "Mode" && node.Rule.Value == "Taiko" {
+			return "(mode = 'Taiko' or mode = 'taiko')", nil
+		}
+
 		if node.Rule.Field == "Archetype" {
 			if node.Rule.Operator == "=" {
 				node.Rule.Operator = "like"

@@ -58,6 +58,7 @@ export class SettingsService {
         },
         lazer: {
           mainPath: s.clientPaths?.lazer?.mainPath ?? null,
+          downloadPath: '',
         },
         manual: {
           mainPath: s.clientPaths?.manual?.mainPath ?? '',

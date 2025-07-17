@@ -18,7 +18,10 @@ const DownloadsProvider: React.FC<PropsWithChildren<any>> = ({ children }) => {
 
   useEffect(() => {
     window.electron.getDownloadsStatus().then(setDownloads);
-    window.electron.listenForDownloads(setDownloads);
+    const cleanup = window.electron.listenForDownloads(setDownloads);
+    
+    // Cleanup function to remove IPC listeners
+    return cleanup;
   }, [])
 
   return (

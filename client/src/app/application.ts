@@ -117,6 +117,7 @@ export class Application {
       ...errorPortion,
       stats: {
         beatmapSets: this._client.beatmapSets.size,
+        lazerWarningCount: this._client instanceof LazerClient ? this._client.getWarningCount() : 0,
       }
     }
   }
