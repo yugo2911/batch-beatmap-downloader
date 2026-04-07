@@ -38,6 +38,7 @@ export const getSongsFolder = async () => {
   }
 
   const osuPath = await settings.get("path") as string;
+  if (!osuPath) return "";
   return path.join(osuPath, "Songs")
 }
 
@@ -45,7 +46,9 @@ export const getDefaultTempPath = async () => {
   const altPathEnabled = await settings.get("altPathEnabled") as boolean
   if (altPathEnabled) return "";
 
-  const osuPath = await settings.get("path") as string;
+  const osuPath = await settings.get("path") as string | undefined;
+  if (!osuPath) return "";
+
   const tempPath = path.join(osuPath, "bbd-temp")
 
   if (!fs.existsSync(tempPath)) {
@@ -63,8 +66,12 @@ export const getTempPath = async () => {
 
 export const getDownloadPath = async () => {
   const temp = await settings.get("temp") as boolean
-  if (!temp) return await getSongsFolder()
-  return await getTempPath();
+  if (!temp) {
+    const songsFolder = await getSongsFolder();
+    return songsFolder || "";
+  }
+  const tp = await getTempPath();
+  return tp || "";
 };
 
 export const getMaxConcurrentDownloads = async () => {
