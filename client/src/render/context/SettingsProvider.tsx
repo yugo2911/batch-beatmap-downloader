@@ -1,7 +1,11 @@
-import { debounce } from 'lodash';
+import { debounce } from "lodash";
 import React, {
-  useState, createContext, useEffect, PropsWithChildren, useContext,
-} from 'react';
+  useState,
+  createContext,
+  useEffect,
+  PropsWithChildren,
+  useContext,
+} from "react";
 
 interface SettingsObject {
   darkMode: boolean;
@@ -15,9 +19,9 @@ interface SettingsObject {
 }
 
 export interface Settings {
-  settings: SettingsObject
+  settings: SettingsObject;
 
-  toggleDarkMode: (on?: boolean) => void
+  toggleDarkMode: (on?: boolean) => void;
   setPath: (path: string) => void;
   setAltPathEnabled: (enabled: boolean) => void;
   setAltPath: (path: string) => void;
@@ -46,70 +50,72 @@ const defaultContext: Settings = {
 export const SettingsContext = createContext<Settings>(defaultContext);
 
 const SettingsProvider: React.FC<PropsWithChildren<any>> = ({ children }) => {
-  const [settings, setSettings] = useState(defaultContext.settings)
+  const [settings, setSettings] = useState(defaultContext.settings);
 
   useEffect(() => {
-    window.electron.getSettings().then((res) => {
+    window.electron.getSettingsLazer().then((res: any) => {
+      console.log("lazer settings:", res);
       setSettings({
-        darkMode: res.darkMode as boolean ?? true,
-        path: res.path as string ?? "",
-        altPath: res.altPath as string ?? "",
-        altPathEnabled: res.altPathEnabled as boolean ?? false,
-        beatmapSetCount: res.sets as number ?? 0,
-        maxConcurrentDownloads: res.maxConcurrentDownloads as number ?? 5,
-        validPath: res.validPath as boolean ?? false,
-        autoTransfer: res.autoTransfer as boolean ?? false,
-      })
+        darkMode: res.darkMode ?? true,
+        path: res.lazerPath ?? "",
+        altPath: "",
+        altPathEnabled: false,
+        beatmapSetCount: res.sets ?? 0,
+        maxConcurrentDownloads: res.maxConcurrentDownloads ?? 5,
+        validPath: res.validPath ?? false,
+        autoTransfer: false,
+      });
 
-      document.documentElement.classList.toggle('dark', res.darkMode as boolean ?? true);
-    })
+      document.documentElement.classList.toggle("dark", res.darkMode ?? true);
+    });
   }, []);
 
   const toggleDarkMode = (on?: boolean) => {
-    let newValue = !settings.darkMode
-    if (on !== undefined) newValue = on
-    document.documentElement.classList.toggle('dark', newValue)
-    window.electron.setSetting("darkMode", newValue)
-    setSettings(prev => ({ ...prev, darkMode: newValue }))
+    let newValue = !settings.darkMode;
+    if (on !== undefined) newValue = on;
+    document.documentElement.classList.toggle("dark", newValue);
+    window.electron.setSetting("darkMode", newValue);
+    setSettings((prev) => ({ ...prev, darkMode: newValue }));
   };
 
   const handleSetPath = async (path: string) => {
-    const [validPath, beatmapSetCount] = await window.electron.setSetting("path", path)
-    setSettings(prev => ({
+    const [validPath, beatmapSetCount] =
+      await window.electron.setLazerPath(path);
+    setSettings((prev) => ({
       ...prev,
       path,
       validPath,
-      beatmapSetCount
-    }))
-  }
+      beatmapSetCount,
+    }));
+  };
 
   const handleSetAltPath = async (path: string) => {
-    const beatmapSetCount = await window.electron.setSetting("altPath", path)
-    setSettings(prev => ({
+    setSettings((prev) => ({
       ...prev,
       altPath: path,
-      beatmapSetCount
-    }))
-  }
+    }));
+  };
 
   const handleSetAltPathEnabled = async (enabled: boolean) => {
-    const beatmapSetCount = await window.electron.setSetting("altPathEnabled", enabled)
-    setSettings(prev => ({
+    setSettings((prev) => ({
       ...prev,
       altPathEnabled: enabled,
-      beatmapSetCount
-    }))
-  }
+    }));
+  };
 
-  const debouncedSetMaxConcurrentDownloads = debounce((value: number) => window.electron.setSetting("maxConcurrentDownloads", value), 500)
+  const debouncedSetMaxConcurrentDownloads = debounce(
+    (value: number) =>
+      window.electron.setSetting("maxConcurrentDownloads", value),
+    500,
+  );
 
   const handleSetMaxConcurrentDownloads = (number: number) => {
-    debouncedSetMaxConcurrentDownloads(number)
-    setSettings(prev => ({
+    debouncedSetMaxConcurrentDownloads(number);
+    setSettings((prev) => ({
       ...prev,
-      maxConcurrentDownloads: number
-    }))
-  }
+      maxConcurrentDownloads: number,
+    }));
+  };
 
   return (
     <SettingsContext.Provider
@@ -127,6 +133,6 @@ const SettingsProvider: React.FC<PropsWithChildren<any>> = ({ children }) => {
   );
 };
 
-export const useSettings = () => useContext(SettingsContext)
+export const useSettings = () => useContext(SettingsContext);
 
 export default SettingsProvider;

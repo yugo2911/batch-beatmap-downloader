@@ -1,6 +1,4 @@
-import {
-  contextBridge,
-} from "electron";
+import { contextBridge } from "electron";
 import { createStoreBindings } from "electron-persist-secure/lib/bindings";
 import {
   handleCheckCollections,
@@ -13,9 +11,13 @@ import {
   handlePauseDownloads,
   handleResumeDownload,
   handleResumeDownloads,
-  handleStartDownload
+  handleStartDownload,
 } from "./downloads";
-import { handleGetBeatmapDetails, handleGetMetrics, handleQuery } from "./query";
+import {
+  handleGetBeatmapDetails,
+  handleGetMetrics,
+  handleQuery,
+} from "./query";
 import {
   handleCheckValidPath,
   handleGetSettings,
@@ -32,8 +34,16 @@ import {
   handleListenForErrors,
   handleListenForServerDown,
   handleOpenUrl,
-  handleQuit
+  handleQuit,
 } from "./system";
+import {
+  handleGetSettingsLazer,
+  handleSetLazerPath,
+  handleSetLazerImportFolder,
+  handleBrowseLazer,
+  handleLoadBeatmapsLazer,
+  handleCheckValidPathLazer,
+} from "./lazer";
 
 export const handleGenericError = (e: unknown) => {
   if (typeof e === "string") {
@@ -55,9 +65,15 @@ export const electronBridge = {
 
   getVersion: handleGetVersion,
   getSettings: handleGetSettings,
+  getSettingsLazer: handleGetSettingsLazer,
   setSettings: handleSetSettings,
+  setLazerPath: handleSetLazerPath,
+  setLazerImportFolder: handleSetLazerImportFolder,
+  browseLazer: handleBrowseLazer,
   checkValidPath: handleCheckValidPath,
+  checkValidPathLazer: handleCheckValidPathLazer,
   loadBeatmaps: handleLoadBeatmaps,
+  loadBeatmapsLazer: handleLoadBeatmapsLazer,
   setSetting: handleSetSetting,
 
   startDownload: handleStartDownload,
@@ -75,7 +91,7 @@ export const electronBridge = {
 
   listenForDownloads: handleListenForDownloads,
   listenForErrors: handleListenForErrors,
-  listenForServerDown: handleListenForServerDown
+  listenForServerDown: handleListenForServerDown,
 };
 
 contextBridge.exposeInMainWorld("electron", electronBridge);

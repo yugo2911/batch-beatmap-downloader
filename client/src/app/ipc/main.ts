@@ -9,7 +9,7 @@ import {
   handlePauseDownloads,
   handleResumeDownload,
   handleResumeDownloads,
-  handleStartDownload
+  handleStartDownload,
 } from "./downloads";
 import {
   handleBrowse,
@@ -22,24 +22,36 @@ import {
   handleSetSetting,
   handleSetSettings,
 } from "./settings";
-import { handleGetBeatmapDetails, handleGetMetrics, handleQuery } from "./query";
+import {
+  handleGetSettingsLazer,
+  handleSetLazerPath,
+  handleSetLazerImportFolder,
+  handleBrowseLazer,
+  handleLoadBeatmapsLazer,
+  handleCheckValidPathLazer,
+} from "./lazer";
+import {
+  handleGetBeatmapDetails,
+  handleGetMetrics,
+  handleQuery,
+} from "./query";
 
 export const serverUri = "https://v2.nzbasic.com";
-export type E = Electron.IpcMainInvokeEvent
+export type E = Electron.IpcMainInvokeEvent;
 
-loadDownloads()
-loadClientId()
+loadDownloads();
+loadClientId();
 
 ipcMain.on("quit", () => app.quit());
-ipcMain.handle("get-version", () => app.getVersion())
+ipcMain.handle("get-version", () => app.getVersion());
 
-ipcMain.handle("start-download", handleStartDownload)
-ipcMain.handle("get-downloads-status", handleGetDownloadsStatus)
+ipcMain.handle("start-download", handleStartDownload);
+ipcMain.handle("get-downloads-status", handleGetDownloadsStatus);
 ipcMain.handle("create-download", handleCreateDownload);
 ipcMain.handle("resume-download", handleResumeDownload);
 ipcMain.handle("resume-downloads", handleResumeDownloads);
 ipcMain.handle("pause-download", handlePauseDownload);
-ipcMain.handle("pause-downloads", handlePauseDownloads)
+ipcMain.handle("pause-downloads", handlePauseDownloads);
 ipcMain.handle("delete-download", handleDeleteDownload);
 ipcMain.handle("move-all-downloads", handleMoveAllDownloads);
 
@@ -48,11 +60,19 @@ ipcMain.handle("get-settings", handleGetSettings);
 ipcMain.handle("set-settings", handleSetSettings);
 ipcMain.handle("browse", handleBrowse);
 ipcMain.handle("load-beatmaps", handleLoadBeatmaps);
-ipcMain.handle("check-collections", handleCheckCollections)
+ipcMain.handle("check-collections", handleCheckCollections);
 ipcMain.handle("reset-temp-path", handleResetTempPath);
 ipcMain.handle("get-temp-data", handleGetTempData);
 ipcMain.handle("get-platform", handleGetPlatform);
 
 ipcMain.handle("query", handleQuery);
-ipcMain.handle("get-metrics", handleGetMetrics)
+ipcMain.handle("get-metrics", handleGetMetrics);
 ipcMain.handle("get-beatmap-details", handleGetBeatmapDetails);
+
+// Lazer handlers
+ipcMain.handle("get-settings-lazer", handleGetSettingsLazer);
+ipcMain.handle("set-lazer-path", handleSetLazerPath);
+ipcMain.handle("set-lazer-import-folder", handleSetLazerImportFolder);
+ipcMain.handle("browse-lazer", handleBrowseLazer);
+ipcMain.handle("load-beatmaps-lazer", handleLoadBeatmapsLazer);
+ipcMain.handle("check-valid-path-lazer", handleCheckValidPathLazer);

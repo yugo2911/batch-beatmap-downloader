@@ -17,4 +17,8 @@ module.exports = {
   },
 
   plugins: plugins,
+
+  externals: {
+    "sql.js": "commonjs sql.js"
+  }
 };
